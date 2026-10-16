@@ -21,13 +21,4 @@
   </g>
   <path d="M0 760 Q 400 650 800 730 T 1600 700 V900 H0Z" fill="#a8dcae"/>
   <path d="M0 830 Q 500 750 1000 810 T 1600 790 V900 H0Z" fill="#82c78f"/>
-  <!-- cat (sitting, seen from behind, looking at the sun) -->
-  <g fill="#e8a24a" transform="translate(1180 520)">
-    <path d="M-95 240 C-120 120 -70 20 0 20 C70 20 120 120 95 240Z"/>
-    <path d="M95 225 C190 235 230 170 200 100 C190 80 165 85 172 108 C190 160 160 195 100 190Z"/>
-    <circle cx="0" cy="-30" r="62"/>
-    <path d="M-58 -62 L-52 -128 L-12 -85Z"/>
-    <path d="M58 -62 L52 -128 L12 -85Z"/>
-    <path d="M-30 80 Q0 60 30 80 M-34 120 Q0 100 34 120" stroke="#c97f2a" stroke-width="8" fill="none" stroke-linecap="round"/>
-  </g>
 </svg>

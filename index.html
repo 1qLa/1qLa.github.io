@@ -27,7 +27,7 @@
   .wrap { max-width: 720px; margin: 0 auto; padding: 0 16px; }
   /* ヒーロー: 全画面の背景(画像 or 動画)と中央の挨拶 */
   .hero { position: relative; min-height: 100vh; min-height: 100svh; display: grid; place-items: center; color: #1a1a1a; text-align: center; overflow: hidden; background: #d8eeff; }
-  .hero-bg { position: absolute; inset: 0; z-index: 0; background: #d8eeff url("assets/hero-cat.svg") center / cover no-repeat; background-size: cover; background-position: center; }
+  .hero-bg { position: absolute; inset: 0; z-index: 0; background: #d8eeff url("assets/hero-bg.svg") center / cover no-repeat; background-size: cover; background-position: center; }
   .hero-bg video { width: 100%; height: 100%; object-fit: cover; }
   .hero::after { content: ""; position: absolute; inset: 0; z-index: 1; background: rgba(255, 255, 255, .12); }
   .hero-inner { position: relative; z-index: 2; padding: 0 16px; }
@@ -35,6 +35,10 @@
   .hero .role { margin: 0 0 8px; opacity: .9; }
   .hero .lead { margin: 0 auto; max-width: 28em; opacity: .85; font-size: .95rem; }
   .scroll-hint { position: absolute; z-index: 2; bottom: 24px; left: 50%; transform: translateX(-50%); color: #3b4a5e; font-size: .8rem; text-decoration: none; opacity: .8; }
+  /* ドット絵の猫(スプライトシート: 48x32 のコマが8つ。0-3 歩き、4-7 座り) */
+  .cat { --s: 4; position: absolute; z-index: 2; left: 0; bottom: 9vh; width: calc(48px * var(--s)); height: calc(32px * var(--s)); pointer-events: none; will-change: transform; }
+  .cat-sprite { width: 100%; height: 100%; background: url("assets/cat-sprite.png") 0 0 / calc(384px * var(--s)) calc(32px * var(--s)) no-repeat; background-position: calc(var(--f, 4) * -48px * var(--s)) 0; image-rendering: pixelated; }
+  .cat.left .cat-sprite { transform: scaleX(-1); }
   header { position: absolute; top: 0; left: 0; right: 0; z-index: 3; }
   header .wrap { max-width: 960px; display: flex; justify-content: space-between; align-items: center; padding-top: 16px; padding-bottom: 16px; }
   header strong { font-size: 1rem; color: #1a1a1a; }
@@ -62,12 +66,14 @@
   @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .hero-bg video { display: none; } }
   @media (max-width: 480px) {
       nav a { margin-left: 10px; font-size: .8rem; }
+    .cat { --s: 3; }
   }
 </style>
 </head>
 <body>
 <div class="hero">
   <div class="hero-bg" aria-hidden="true"></div>
+  <div class="cat" id="cat" aria-hidden="true"><div class="cat-sprite"></div></div>
   <header>
     <div class="wrap">
       <strong>1qLa</strong>
@@ -161,6 +167,58 @@
 <footer>
   <div class="wrap">&copy; 2026 1qLa</div>
 </footer>
+
+<script>
+// ヒーローのドット絵の猫: 歩く → 座ってまばたき・しっぽを振る → また歩く
+(function () {
+  var hero = document.querySelector('.hero');
+  var cat = document.getElementById('cat');
+  if (!hero || !cat) return;
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var SIT_TAIL = [0, 1, 0, 3];                 // 座りのしっぽのコマ(4-7 のうちの番号)
+  var x = 0, dir = 1, target = 0, state = 'sit', stateUntil = 0, visible = true;
+  var catW = function () { return cat.offsetWidth; };
+  var maxX = function () { return Math.max(0, hero.clientWidth - catW()); };
+  var setFrame = function (f) { cat.style.setProperty('--f', f); };
+  var place = function () {
+    cat.style.transform = 'translateX(' + Math.round(x) + 'px)';
+    cat.classList.toggle('left', dir < 0);
+  };
+  var pickTarget = function () {
+    var m = maxX(), t;
+    do { t = m * (0.05 + Math.random() * 0.9); } while (Math.abs(t - x) < m * 0.25 && m > 0);
+    target = t; dir = t > x ? 1 : -1;
+  };
+  x = maxX() * 0.75; place(); setFrame(4);
+  if (reduce) return;
+  new IntersectionObserver(function (e) { visible = e[0].isIntersecting; }).observe(hero);
+
+  var last = performance.now(), walkT = 0;
+  function tick(now) {
+    requestAnimationFrame(tick);
+    var dt = Math.min((now - last) / 1000, 0.1); last = now;
+    if (!visible) return;
+    var speed = 14 * parseFloat(getComputedStyle(cat).getPropertyValue('--s'));   // 1コマ=1pxの絵を拡大した分だけ進む
+    if (state === 'walk') {
+      walkT += dt;
+      setFrame(Math.floor(walkT / 0.16) % 4);
+      x += dir * speed * dt;
+      if ((dir > 0 && x >= target) || (dir < 0 && x <= target)) {
+        x = target; state = 'sit'; stateUntil = now + 3500 + Math.random() * 3500;
+      }
+    } else {
+      var t = now % 1600;
+      var blink = (now % 4200) < 180;
+      setFrame(4 + (blink ? 2 : SIT_TAIL[Math.floor(t / 400)]));
+      if (now >= stateUntil) { pickTarget(); state = 'walk'; walkT = 0; }
+    }
+    place();
+  }
+  stateUntil = performance.now() + 2500;
+  requestAnimationFrame(tick);
+  addEventListener('resize', function () { x = Math.min(x, maxX()); place(); });
+})();
+</script>
 
 <script type="importmap">
 { "imports": {
