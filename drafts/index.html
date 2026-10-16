@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="ja">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>山田 太郎 | ポートフォリオ</title>
-<meta name="description" content="Webエンジニア 山田 太郎のポートフォリオ(デモデータ)">
+<title>Taro Yamada | Portfolio</title>
+<meta name="description" content="Portfolio of Taro Yamada, web engineer (demo data)">
 <style>
   :root {
     --bg: #ffffff;
@@ -33,14 +33,21 @@
   }
   a { color: var(--accent); }
   .wrap { max-width: 720px; margin: 0 auto; padding: 0 16px; }
-  header { border-bottom: 1px solid var(--line); }
-  header .wrap { display: flex; justify-content: space-between; align-items: center; padding-top: 16px; padding-bottom: 16px; }
-  header strong { font-size: 1rem; }
-  nav a { margin-left: 16px; color: var(--muted); text-decoration: none; font-size: .9rem; }
-  nav a:hover { color: var(--fg); }
-  .hero { padding: 80px 0 48px; }
-  .hero h1 { font-size: 2rem; margin: 0 0 8px; }
-  .hero .role { color: var(--muted); margin: 0 0 24px; }
+  /* ヒーロー: 全画面の背景(画像 or 動画)と中央の挨拶 */
+  .hero { position: relative; min-height: 100vh; min-height: 100svh; display: grid; place-items: center; color: #fff; text-align: center; overflow: hidden; background: #1c2540; }
+  .hero-bg { position: absolute; inset: 0; z-index: 0; background: #1c2540 url("assets/hero-cat.svg") center / cover no-repeat; background-size: cover; background-position: center; }
+  .hero-bg video { width: 100%; height: 100%; object-fit: cover; }
+  .hero::after { content: ""; position: absolute; inset: 0; z-index: 1; background: rgba(0, 0, 0, .35); }
+  .hero-inner { position: relative; z-index: 2; padding: 0 16px; }
+  .hero h1 { font-size: clamp(2rem, 6vw, 3.5rem); line-height: 1.3; margin: 0 0 16px; letter-spacing: .02em; }
+  .hero .role { margin: 0 0 8px; opacity: .9; }
+  .hero .lead { margin: 0 auto; max-width: 28em; opacity: .85; font-size: .95rem; }
+  .scroll-hint { position: absolute; z-index: 2; bottom: 24px; left: 50%; transform: translateX(-50%); color: #fff; font-size: .8rem; text-decoration: none; opacity: .8; }
+  header { position: absolute; top: 0; left: 0; right: 0; z-index: 3; }
+  header .wrap { max-width: 960px; display: flex; justify-content: space-between; align-items: center; padding-top: 16px; padding-bottom: 16px; }
+  header strong { font-size: 1rem; color: #fff; }
+  nav a { margin-left: 16px; color: rgba(255,255,255,.85); text-decoration: none; font-size: .9rem; }
+  nav a:hover { color: #fff; }
   section { padding: 40px 0; border-top: 1px solid var(--line); }
   h2 { font-size: 1.2rem; margin: 0 0 20px; }
   p { margin: 0 0 1em; }
@@ -57,98 +64,106 @@
   .timeline time { color: var(--muted); font-size: .9rem; }
   footer { border-top: 1px solid var(--line); padding: 24px 0; color: var(--muted); font-size: .85rem; }
   .demo { background: #fff6d6; color: #5a4600; text-align: center; font-size: .8rem; padding: 4px; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .hero-bg video { display: none; } }
   @media (max-width: 480px) {
     .timeline li { grid-template-columns: 1fr; gap: 0; }
-    .hero { padding-top: 48px; }
+    nav a { margin-left: 10px; font-size: .8rem; }
   }
 </style>
 </head>
 <body>
-<div class="demo">デモデータです。内容は実際の情報に差し替えてください。</div>
+<div class="demo">Demo data. Replace with your real information.</div>
 
-<header>
-  <div class="wrap">
-    <strong>山田 太郎</strong>
-    <nav>
-      <a href="#about">自己紹介</a>
-      <a href="#skills">スキル</a>
-      <a href="#works">制作物</a>
-      <a href="#career">経歴</a>
-      <a href="#contact">連絡先</a>
-    </nav>
+<div class="hero">
+  <div class="hero-bg" aria-hidden="true">
+    <!-- 動画を使う場合は下のコメントを外し、assets/hero.mp4 を置く
+    <video autoplay muted loop playsinline poster="assets/hero.jpg"><source src="assets/hero.mp4" type="video/mp4"></video>
+    -->
   </div>
-</header>
+  <header>
+    <div class="wrap">
+      <strong>Taro Yamada</strong>
+      <nav>
+        <a href="#about">About</a>
+        <a href="#skills">Skills</a>
+        <a href="#works">Works</a>
+        <a href="#career">Career</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+  <div class="hero-inner">
+    <h1>Hi, I'm Taro Yamada.</h1>
+    <p class="role">Web engineer, mainly frontend</p>
+    <p class="lead">I build web apps that people can use without getting lost. Take your time looking around.</p>
+  </div>
+  <a class="scroll-hint" href="#about">Scroll ↓</a>
+</div>
 
 <main class="wrap">
-  <div class="hero">
-    <h1>山田 太郎</h1>
-    <p class="role">Webエンジニア / フロントエンド中心</p>
-    <p>ユーザーが迷わず使えるWebアプリを作ることを大切にしています。設計から実装、運用まで一通り経験しています。</p>
-  </div>
-
   <section id="about">
-    <h2>自己紹介</h2>
-    <p>ここに自己紹介を書きます。これまでの経験や、仕事で大切にしている考え方を入れます。</p>
-    <p>現在の関心や、これから挑戦したいことも書けます。読む人が人柄をつかめる内容にします。</p>
+    <h2>About</h2>
+    <p>Write your self-introduction here. Include your experience and what you value at work.</p>
+    <p>You can also add your current interests and what you want to try next, so readers get a sense of who you are.</p>
   </section>
 
   <section id="skills">
-    <h2>スキル</h2>
+    <h2>Skills</h2>
     <div class="skill-group">
-      <h3>言語</h3>
+      <h3>Languages</h3>
       <ul class="tags"><li>TypeScript</li><li>JavaScript</li><li>Python</li></ul>
     </div>
     <div class="skill-group">
-      <h3>フレームワーク・ライブラリ</h3>
+      <h3>Frameworks &amp; Libraries</h3>
       <ul class="tags"><li>React</li><li>Next.js</li><li>Node.js</li></ul>
     </div>
     <div class="skill-group">
-      <h3>ツール・インフラ</h3>
+      <h3>Tools &amp; Infrastructure</h3>
       <ul class="tags"><li>Git / GitHub</li><li>Docker</li><li>AWS</li></ul>
     </div>
   </section>
 
   <section id="works">
-    <h2>制作物</h2>
+    <h2>Works</h2>
     <article class="work">
-      <h3><a href="#">サンプルアプリ A</a></h3>
+      <h3><a href="#">Sample App A</a></h3>
       <p class="stack">React / TypeScript / Firebase</p>
-      <p>作品の概要を書きます。解決した課題と、自分の担当範囲を入れます。</p>
+      <p>Describe the project here: the problem it solves and your role.</p>
     </article>
     <article class="work">
-      <h3><a href="#">サンプルアプリ B</a></h3>
+      <h3><a href="#">Sample App B</a></h3>
       <p class="stack">Next.js / PostgreSQL</p>
-      <p>作品の概要を書きます。工夫した点や成果があれば添えます。</p>
+      <p>Describe the project here, with any design decisions or results.</p>
     </article>
     <article class="work">
-      <h3><a href="#">サンプルツール C</a></h3>
+      <h3><a href="#">Sample Tool C</a></h3>
       <p class="stack">Python / Docker</p>
-      <p>作品の概要を書きます。公開リポジトリがあればリンクします。</p>
+      <p>Describe the project here, and link the public repository if there is one.</p>
     </article>
   </section>
 
   <section id="career">
-    <h2>経歴</h2>
+    <h2>Career</h2>
     <ul class="timeline">
-      <li><time>20XX.04 - 現在</time><span>株式会社サンプル / Webエンジニア</span></li>
-      <li><time>20XX.04 - 20XX.03</time><span>サンプル商事 / システム開発</span></li>
-      <li><time>20XX.04</time><span>○○大学 △△学部 卒業</span></li>
+      <li><time>Apr 20XX - Present</time><span>Sample Inc. / Web Engineer</span></li>
+      <li><time>Apr 20XX - Mar 20XX</time><span>Sample Trading / System Development</span></li>
+      <li><time>Apr 20XX</time><span>Graduated, Faculty of XX, YY University</span></li>
     </ul>
   </section>
 
   <section id="contact">
-    <h2>連絡先</h2>
-    <p>お仕事のご相談や、ご質問はお気軽にご連絡ください。下記の連絡先は仮のものです。</p>
+    <h2>Contact</h2>
+    <p>Feel free to reach out about work or any questions. The contacts below are placeholders.</p>
     <ul class="tags">
       <li><a href="https://github.com/">GitHub</a></li>
       <li><a href="mailto:example@example.com">example@example.com</a></li>
-      <li><a href="https://x.com/">X(旧Twitter)</a></li>
+      <li><a href="https://x.com/">X (formerly Twitter)</a></li>
     </ul>
   </section>
 </main>
 
 <footer>
-  <div class="wrap">&copy; 2026 山田 太郎</div>
+  <div class="wrap">&copy; 2026 Taro Yamada</div>
 </footer>
 </body>
 </html>

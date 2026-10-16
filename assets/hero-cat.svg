@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#141b36"/>
+      <stop offset=".6" stop-color="#2f4a8a"/>
+      <stop offset="1" stop-color="#8fa9e0"/>
+    </linearGradient>
+    <radialGradient id="glow" cx=".5" cy=".5" r=".5">
+      <stop offset="0" stop-color="#fff6d6" stop-opacity=".55"/>
+      <stop offset="1" stop-color="#fff6d6" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#sky)"/>
+  <g fill="#fff" opacity=".85">
+    <circle cx="140" cy="120" r="2.5"/><circle cx="320" cy="60" r="2"/><circle cx="470" cy="190" r="3"/>
+    <circle cx="640" cy="90" r="2"/><circle cx="820" cy="160" r="2.5"/><circle cx="980" cy="50" r="2"/>
+    <circle cx="1130" cy="210" r="3"/><circle cx="1290" cy="100" r="2"/><circle cx="1440" cy="170" r="2.5"/>
+    <circle cx="1520" cy="60" r="2"/><circle cx="240" cy="260" r="2"/><circle cx="1050" cy="300" r="2"/>
+  </g>
+  <circle cx="1230" cy="230" r="170" fill="url(#glow)"/>
+  <circle cx="1230" cy="230" r="78" fill="#fff6d6"/>
+  <path d="M0 760 Q 400 650 800 730 T 1600 700 V900 H0Z" fill="#1a2547"/>
+  <path d="M0 830 Q 500 750 1000 810 T 1600 790 V900 H0Z" fill="#0f1730"/>
+  <!-- cat (sitting, seen from behind, looking at the moon) -->
+  <g fill="#0a0f22" transform="translate(1180 520)">
+    <path d="M-95 240 C-120 120 -70 20 0 20 C70 20 120 120 95 240Z"/>
+    <path d="M95 225 C190 235 230 170 200 100 C190 80 165 85 172 108 C190 160 160 195 100 190Z"/>
+    <circle cx="0" cy="-30" r="62"/>
+    <path d="M-58 -62 L-52 -128 L-12 -85Z"/>
+    <path d="M58 -62 L52 -128 L12 -85Z"/>
+  </g>
+</svg>
