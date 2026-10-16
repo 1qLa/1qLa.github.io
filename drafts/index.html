@@ -12,15 +12,7 @@
     --muted: #666666;
     --line: #e5e5e5;
     --accent: #2457d6;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #111111;
-      --fg: #eeeeee;
-      --muted: #9a9a9a;
-      --line: #2a2a2a;
-      --accent: #7aa2ff;
-    }
+    color-scheme: light;
   }
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
@@ -34,20 +26,20 @@
   a { color: var(--accent); }
   .wrap { max-width: 720px; margin: 0 auto; padding: 0 16px; }
   /* ヒーロー: 全画面の背景(画像 or 動画)と中央の挨拶 */
-  .hero { position: relative; min-height: 100vh; min-height: 100svh; display: grid; place-items: center; color: #fff; text-align: center; overflow: hidden; background: #1c2540; }
-  .hero-bg { position: absolute; inset: 0; z-index: 0; background: #1c2540 url("assets/hero-cat.svg") center / cover no-repeat; background-size: cover; background-position: center; }
+  .hero { position: relative; min-height: 100vh; min-height: 100svh; display: grid; place-items: center; color: #1a1a1a; text-align: center; overflow: hidden; background: #d8eeff; }
+  .hero-bg { position: absolute; inset: 0; z-index: 0; background: #d8eeff url("assets/hero-cat.svg") center / cover no-repeat; background-size: cover; background-position: center; }
   .hero-bg video { width: 100%; height: 100%; object-fit: cover; }
-  .hero::after { content: ""; position: absolute; inset: 0; z-index: 1; background: rgba(0, 0, 0, .35); }
+  .hero::after { content: ""; position: absolute; inset: 0; z-index: 1; background: rgba(255, 255, 255, .12); }
   .hero-inner { position: relative; z-index: 2; padding: 0 16px; }
   .hero h1 { font-size: clamp(2rem, 6vw, 3.5rem); line-height: 1.3; margin: 0 0 16px; letter-spacing: .02em; }
   .hero .role { margin: 0 0 8px; opacity: .9; }
   .hero .lead { margin: 0 auto; max-width: 28em; opacity: .85; font-size: .95rem; }
-  .scroll-hint { position: absolute; z-index: 2; bottom: 24px; left: 50%; transform: translateX(-50%); color: #fff; font-size: .8rem; text-decoration: none; opacity: .8; }
+  .scroll-hint { position: absolute; z-index: 2; bottom: 24px; left: 50%; transform: translateX(-50%); color: #3b4a5e; font-size: .8rem; text-decoration: none; opacity: .8; }
   header { position: absolute; top: 0; left: 0; right: 0; z-index: 3; }
   header .wrap { max-width: 960px; display: flex; justify-content: space-between; align-items: center; padding-top: 16px; padding-bottom: 16px; }
-  header strong { font-size: 1rem; color: #fff; }
-  nav a { margin-left: 16px; color: rgba(255,255,255,.85); text-decoration: none; font-size: .9rem; }
-  nav a:hover { color: #fff; }
+  header strong { font-size: 1rem; color: #1a1a1a; }
+  nav a { margin-left: 16px; color: #3b4a5e; text-decoration: none; font-size: .9rem; }
+  nav a:hover { color: #000; }
   section { padding: 40px 0; border-top: 1px solid var(--line); }
   h2 { font-size: 1.2rem; margin: 0 0 20px; }
   p { margin: 0 0 1em; }
