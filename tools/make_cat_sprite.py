@@ -97,8 +97,10 @@ def head(cv, cx, cy, blink=False):
         cv.rect(cx + 3, cy - 2, cx + 4, cy - 1, 'ey'); cv.put(cx + 4, cy - 1, 'pu'); cv.put(cx + 3, cy - 1, 'pu')
     # ほほの毛と、胸のたてがみ(大きな白い襟毛)
     cv.put(cx - 7, cy + 1, 'lt'); cv.put(cx + 7, cy + 1, 'lt')
-    cv.ellipse(cx + 1, cy + 7, 7.5, 4, 'wh')
-    cv.ellipse(cx - 5, cy + 5, 2.5, 2, 'wh')
+    # あごの下に垂れる襟毛(前に張り出さず、下へ。ふちはぎざぎざ)
+    cv.ellipse(cx - 1, cy + 7, 5, 4, 'wh')
+    for i, x in enumerate(range(cx - 4, cx + 3)):
+        cv.rect(x, cy + 8, x, cy + (12 if i % 2 == 0 else 11), 'wh')
 
 
 def walk_frame(i):
@@ -122,7 +124,7 @@ def walk_frame(i):
     # 胴
     cv.ellipse(22, by, 12.5, 7, 'br')
     cv.ellipse(22, by + 6, 11, 2.2, 'lt', only_on=('br',))
-    cv.ellipse(31, by + 3, 5, 5, 'wh', only_on=BODY)
+    cv.ellipse(31, by + 3, 4, 4, 'wh', only_on=BODY)
     cv.ellipse(17, by - 3, 5, 3, 'or', only_on=BODY)
     cv.ellipse(25, by + 4, 3, 2, 'or', only_on=BODY)
     for sx in (12, 15, 19, 23, 27):
