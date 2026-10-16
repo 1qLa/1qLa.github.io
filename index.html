@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Taro Yamada | Portfolio</title>
-<meta name="description" content="Portfolio of Taro Yamada, web engineer (demo data)">
+<title>1qLa | Portfolio</title>
+<meta name="description" content="Portfolio of 1qLa: web, embedded and cloud projects">
 <style>
   :root {
     --bg: #ffffff;
@@ -47,47 +47,42 @@
   .tags li { border: 1px solid var(--line); border-radius: 999px; padding: 2px 12px; font-size: .85rem; }
   .skill-group { margin-bottom: 20px; }
   .skill-group h3 { font-size: .9rem; color: var(--muted); margin: 0 0 8px; font-weight: 600; }
-  .work { padding: 16px 0; border-bottom: 1px solid var(--line); }
+  .work { padding: 24px 0; border-bottom: 1px solid var(--line); }
   .work:last-child { border-bottom: 0; }
-  .work h3 { margin: 0 0 4px; font-size: 1rem; }
+  .work h3 { margin: 16px 0 4px; font-size: 1.05rem; }
   .work .stack { color: var(--muted); font-size: .85rem; margin: 0 0 8px; }
-  .timeline { list-style: none; padding: 0; margin: 0; }
-  .timeline li { display: grid; grid-template-columns: 120px 1fr; gap: 16px; padding: 8px 0; }
-  .timeline time { color: var(--muted); font-size: .9rem; }
+  .work .links { margin: 0; font-size: .9rem; }
+  .work .links a { margin-right: 16px; }
+  .media { position: relative; aspect-ratio: 16 / 9; border-radius: 12px; overflow: hidden; border: 1px solid var(--line); background: #eef3fb; }
+  .media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .scene { background: linear-gradient(to bottom, #9fd3ff 0%, #d8eeff 62%, #a8dcae 62%, #82c78f 100%); }
+  .scene canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .scene .caption { position: absolute; left: 12px; bottom: 8px; margin: 0; font-size: .75rem; color: #2f5d3a; }
   footer { border-top: 1px solid var(--line); padding: 24px 0; color: var(--muted); font-size: .85rem; }
-  .demo { background: #fff6d6; color: #5a4600; text-align: center; font-size: .8rem; padding: 4px; }
   @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .hero-bg video { display: none; } }
   @media (max-width: 480px) {
-    .timeline li { grid-template-columns: 1fr; gap: 0; }
-    nav a { margin-left: 10px; font-size: .8rem; }
+      nav a { margin-left: 10px; font-size: .8rem; }
   }
 </style>
 </head>
 <body>
-<div class="demo">Demo data. Replace with your real information.</div>
-
 <div class="hero">
-  <div class="hero-bg" aria-hidden="true">
-    <!-- 動画を使う場合は下のコメントを外し、assets/hero.mp4 を置く
-    <video autoplay muted loop playsinline poster="assets/hero.jpg"><source src="assets/hero.mp4" type="video/mp4"></video>
-    -->
-  </div>
+  <div class="hero-bg" aria-hidden="true"></div>
   <header>
     <div class="wrap">
-      <strong>Taro Yamada</strong>
+      <strong>1qLa</strong>
       <nav>
         <a href="#about">About</a>
         <a href="#skills">Skills</a>
         <a href="#works">Works</a>
-        <a href="#career">Career</a>
         <a href="#contact">Contact</a>
       </nav>
     </div>
   </header>
   <div class="hero-inner">
-    <h1>Hi, I'm Taro Yamada.</h1>
-    <p class="role">Web engineer, mainly frontend</p>
-    <p class="lead">I build web apps that people can use without getting lost. Take your time looking around.</p>
+    <h1>Hi, I'm 1qLa.</h1>
+    <p class="role">Web, embedded and cloud projects</p>
+    <p class="lead">Here are a few things I've built. Take your time looking around.</p>
   </div>
   <a class="scroll-hint" href="#about">Scroll ↓</a>
 </div>
@@ -95,67 +90,152 @@
 <main class="wrap">
   <section id="about">
     <h2>About</h2>
-    <p>Write your self-introduction here. Include your experience and what you value at work.</p>
-    <p>You can also add your current interests and what you want to try next, so readers get a sense of who you are.</p>
+    <p>I like building things that connect software with the real world: a 3D learning game for the browser, a smart light unlocked by an NFC tag, an e-paper calendar, and AWS monitoring written in Terraform.</p>
+    <p>On this page you can find four of my projects. Each one links to its GitHub repository and presentation slides.</p>
   </section>
 
   <section id="skills">
     <h2>Skills</h2>
     <div class="skill-group">
       <h3>Languages</h3>
-      <ul class="tags"><li>TypeScript</li><li>JavaScript</li><li>Python</li></ul>
+      <ul class="tags"><li>Kotlin</li><li>Python</li><li>JavaScript</li><li>C++ (Arduino)</li><li>HCL (Terraform)</li></ul>
     </div>
     <div class="skill-group">
       <h3>Frameworks &amp; Libraries</h3>
-      <ul class="tags"><li>React</li><li>Next.js</li><li>Node.js</li></ul>
+      <ul class="tags"><li>Vue.js 3</li><li>Three.js</li><li>FastAPI</li><li>PlatformIO</li></ul>
     </div>
     <div class="skill-group">
       <h3>Tools &amp; Infrastructure</h3>
-      <ul class="tags"><li>Git / GitHub</li><li>Docker</li><li>AWS</li></ul>
+      <ul class="tags"><li>AWS</li><li>Terraform</li><li>Docker</li><li>Nginx</li><li>Git / GitHub</li><li>Blender</li></ul>
     </div>
   </section>
 
   <section id="works">
     <h2>Works</h2>
-    <article class="work">
-      <h3><a href="#">Sample App A</a></h3>
-      <p class="stack">React / TypeScript / Firebase</p>
-      <p>Describe the project here: the problem it solves and your role.</p>
-    </article>
-    <article class="work">
-      <h3><a href="#">Sample App B</a></h3>
-      <p class="stack">Next.js / PostgreSQL</p>
-      <p>Describe the project here, with any design decisions or results.</p>
-    </article>
-    <article class="work">
-      <h3><a href="#">Sample Tool C</a></h3>
-      <p class="stack">Python / Docker</p>
-      <p>Describe the project here, and link the public repository if there is one.</p>
-    </article>
-  </section>
 
-  <section id="career">
-    <h2>Career</h2>
-    <ul class="timeline">
-      <li><time>Apr 20XX - Present</time><span>Sample Inc. / Web Engineer</span></li>
-      <li><time>Apr 20XX - Mar 20XX</time><span>Sample Trading / System Development</span></li>
-      <li><time>Apr 20XX</time><span>Graduated, Faculty of XX, YY University</span></li>
-    </ul>
+    <article class="work">
+      <div class="media scene" id="momo-scene" role="img" aria-label="Momotaro, the game's hero, walking across a field">
+        <canvas></canvas>
+        <p class="caption">Live 3D model from the game</p>
+      </div>
+      <h3>Packets of Long Ago (昔々のパケットたち)</h3>
+      <p class="stack">Vue.js 3 / Three.js / Blender</p>
+      <p>A 3D learning game that explains networking basics (IP addresses, routers, switches) through the folktale of Momotaro. I came up with the concept and built the frontend: 3D rendering, collision handling and the UI logic. It won the Concept Award at a school exhibition and was shown at CEATEC 2026.</p>
+      <p class="links"><a href="https://pingers.tenma.tech/">Play</a><a href="https://github.com/1qLa/networkgame">GitHub</a><a href="https://canva.link/4kcet6nm0iyj8h1">Slides</a></p>
+    </article>
+
+    <article class="work">
+      <div class="media"><img src="assets/works/nfc_light.png" alt="LighTouch title slide" width="1440" height="810" loading="lazy"></div>
+      <h3>LighTouch</h3>
+      <p class="stack">Kotlin (Android) / ESP32-C3 / PN532 / BLE</p>
+      <p>A smart light that works like a lock: it only switches on when a registered NFC tag is held to it. An Android app connects over BLE for setup and key management, and settings can only be changed while a physical button is pressed.</p>
+      <p class="links"><a href="https://github.com/1qLa/nfc_light">GitHub</a><a href="https://canva.link/zlat5jei4h3g1fg">Slides</a></p>
+    </article>
+
+    <article class="work">
+      <div class="media"><img src="assets/works/calendar_epaper.png" alt="E-paper calendar showing a monthly view" width="577" height="432" loading="lazy" style="object-fit: contain; background: #fff;"></div>
+      <h3>E-Paper Calendar</h3>
+      <p class="stack">M5Paper (C++) / Python, FastAPI / Docker, Nginx</p>
+      <p>An IoT calendar for M5Paper that shows the latest events from Google Calendar. The server renders the calendar as an image, and the device uses ETag caching to skip redraws when nothing has changed, which saves power.</p>
+      <p class="links"><a href="https://github.com/1qLa/calendar_epaper">GitHub</a><a href="https://canva.link/rsez2alt8vggqhj">Slides</a></p>
+    </article>
+
+    <article class="work">
+      <h3>AWS Drift Detection and Slack Alerts</h3>
+      <p class="stack">Terraform / AWS (CloudTrail, EventBridge, SNS, SQS, Lambda, KMS) / Python</p>
+      <p>An event-driven system that detects manual changes to AWS resources managed with Terraform (configuration drift) and notifies Slack right away. It has no screen: CloudTrail events flow through EventBridge, SNS and SQS to a Lambda function that posts the alert.</p>
+      <p class="links"><a href="https://github.com/1qLa/aws_Terraform">GitHub</a><a href="https://canva.link/nnh28ewd2jvgcx9">Slides</a></p>
+    </article>
   </section>
 
   <section id="contact">
     <h2>Contact</h2>
-    <p>Feel free to reach out about work or any questions. The contacts below are placeholders.</p>
+    <p>Feel free to reach out by email or through GitHub.</p>
     <ul class="tags">
-      <li><a href="https://github.com/">GitHub</a></li>
-      <li><a href="mailto:example@example.com">example@example.com</a></li>
-      <li><a href="https://x.com/">X (formerly Twitter)</a></li>
+      <li><a href="https://github.com/1qLa">GitHub</a></li>
+      <li><a href="mailto:kane170617@gmail.com">kane170617@gmail.com</a></li>
     </ul>
   </section>
 </main>
 
 <footer>
-  <div class="wrap">&copy; 2026 Taro Yamada</div>
+  <div class="wrap">&copy; 2026 1qLa</div>
 </footer>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.178.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.178.0/examples/jsm/"
+} }
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+const box = document.getElementById('momo-scene');
+const canvas = box.querySelector('canvas');
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+try {
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(30, 16 / 9, 0.1, 50);
+  camera.position.set(0, 1.0, 7);
+  camera.lookAt(0, 0.85, 0);
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x88aa88, 2.2));
+  const sun = new THREE.DirectionalLight(0xffffff, 2);
+  sun.position.set(2, 4, 3);
+  scene.add(sun);
+
+  const resize = () => {
+    const w = box.clientWidth, h = box.clientHeight;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+  };
+  new ResizeObserver(resize).observe(box);
+  resize();
+
+  const gltf = await new GLTFLoader().loadAsync('assets/models/momotaro.glb');
+  const model = gltf.scene;
+  const size = new THREE.Box3().setFromObject(model).getSize(new THREE.Vector3());
+  model.scale.setScalar(1.9 / size.y);
+  const bb = new THREE.Box3().setFromObject(model);
+  model.position.y -= bb.min.y;
+  scene.add(model);
+
+  const mixer = new THREE.AnimationMixer(model);
+  const clip = THREE.AnimationClip.findByName(gltf.animations, 'walk') || gltf.animations[0];
+  if (clip) mixer.clipAction(clip).play();
+
+  const FACE = Math.PI / 2;   // モデルが +x 方向を向くようにする
+  const RANGE = 2.4;          // 往復する左右の幅
+  const SPEED = 0.9;
+  let x = -RANGE, dir = 1, visible = true;
+  new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(box);
+
+  const clock = new THREE.Clock();
+  const draw = () => {
+    model.position.x = x;
+    model.rotation.y = dir > 0 ? FACE : -FACE;
+    renderer.render(scene, camera);
+  };
+  const tick = () => {
+    requestAnimationFrame(tick);
+    const dt = Math.min(clock.getDelta(), 0.1);
+    if (!visible) return;
+    mixer.update(dt);
+    x += dir * SPEED * dt;
+    if (x > RANGE) { x = RANGE; dir = -1; }
+    if (x < -RANGE) { x = -RANGE; dir = 1; }
+    draw();
+  };
+  if (reduce) { mixer.update(0.2); draw(); } else { tick(); }
+} catch (e) {
+  console.warn('3D preview unavailable', e);
+  box.querySelector('.caption').textContent = '3D preview unavailable';
+}
+</script>
 </body>
 </html>
