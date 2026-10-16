@@ -60,7 +60,7 @@ class Canvas:
 BODY = ('br', 'dk', 'lt')
 
 
-def tail(cv, pts, r=2):
+def tail(cv, pts, r=3):
     for i, (x, y) in enumerate(pts):
         cv.ellipse(x, y, r, r, 'br')
     for i, (x, y) in enumerate(pts):
@@ -68,25 +68,25 @@ def tail(cv, pts, r=2):
             cv.ellipse(x, y, r - 0.3, r - 0.3, 'dk', only_on=('br',))
     x, y = pts[-1]
     cv.ellipse(x, y, r - 0.4, r - 0.4, 'lt', only_on=('br', 'dk'))
+    cv.put(x - 1, y - r, 'lt'); cv.put(x + 1, y - r, 'lt')
 
 
 def head(cv, cx, cy, blink=False):
-    cv.ellipse(cx, cy, 7, 6, 'br')
-    # 耳(三角。先に毛の房)
-    for ex, lean in ((cx - 6, 1), (cx + 3, -1)):
-        for k in range(5):           # k=0 が先端
-            x0 = ex + (1 if lean > 0 else 0) + (0 if lean > 0 else 0) - (k // 2 if lean < 0 else 0)
-            w = 1 + k
-            xs = ex + 2 - (w // 2) if lean > 0 else ex + 1 - (w // 2) + 1
-            cv.rect(xs, cy - 10 + k, xs + w - 1, cy - 10 + k, 'br')
-        tipx = ex + 2 if lean > 0 else ex + 2
-        cv.put(tipx, cy - 11, 'dk')
-        cv.put(tipx, cy - 8, 'pk')
+    # 頭: 上は広く、あごに向けて細い(三角寄り)
+    cv.ellipse(cx, cy - 1, 7.2, 5.6, 'br')
+    cv.ellipse(cx, cy + 2, 5.4, 3.8, 'br')
+    # 耳: 大きく、先に長い房(リンクスティップ)
+    widths = [2, 3, 3, 4, 5, 5]
+    for ecx in (cx - 5, cx + 5):
+        for k, w in enumerate(widths):
+            cv.rect(ecx - w // 2, cy - 10 + k, ecx - w // 2 + w - 1, cy - 10 + k, 'br')
+        cv.put(ecx, cy - 11, 'dk'); cv.put(ecx, cy - 12, 'dk')
+        cv.put(ecx, cy - 7, 'pk'); cv.put(ecx, cy - 6, 'pk')
     # 額の縞とオレンジの斑
     cv.rect(cx - 2, cy - 5, cx - 2, cy - 4, 'dk'); cv.rect(cx + 2, cy - 5, cx + 2, cy - 4, 'dk')
     cv.rect(cx - 1, cy - 5, cx + 1, cy - 3, 'or')
-    # 白い口まわり
-    cv.ellipse(cx + 1, cy + 3, 4.2, 3.2, 'wh')
+    # 白い口まわり(鼻すじは長くまっすぐ)
+    cv.ellipse(cx + 1, cy + 3, 3.8, 3.2, 'wh')
     cv.rect(cx, cy - 2, cx + 1, cy + 1, 'wh')
     cv.put(cx, cy + 1, 'pk'); cv.put(cx + 1, cy + 1, 'pk')
     # 目
@@ -95,8 +95,10 @@ def head(cv, cx, cy, blink=False):
     else:
         cv.rect(cx - 4, cy - 2, cx - 3, cy - 1, 'ey'); cv.put(cx - 3, cy - 1, 'pu'); cv.put(cx - 4, cy - 1, 'pu')
         cv.rect(cx + 3, cy - 2, cx + 4, cy - 1, 'ey'); cv.put(cx + 4, cy - 1, 'pu'); cv.put(cx + 3, cy - 1, 'pu')
-    # ほほの毛
-    cv.put(cx - 7, cy + 2, 'lt'); cv.put(cx + 7, cy + 2, 'lt'); cv.put(cx - 6, cy + 4, 'wh'); cv.put(cx + 6, cy + 4, 'wh')
+    # ほほの毛と、胸のたてがみ(大きな白い襟毛)
+    cv.put(cx - 7, cy + 1, 'lt'); cv.put(cx + 7, cy + 1, 'lt')
+    cv.ellipse(cx + 1, cy + 7, 7.5, 4, 'wh')
+    cv.ellipse(cx - 5, cy + 5, 2.5, 2, 'wh')
 
 
 def walk_frame(i):
@@ -106,7 +108,7 @@ def walk_frame(i):
     by = 17 + bob
     sway = [0, -1, 0, 1][i]
     # しっぽ(後ろ=左、上に反る)
-    tail(cv, [(10, by - 1), (7, by - 4), (6, by - 8), (6 + sway, by - 12), (7 + sway, by - 15)], 2)
+    tail(cv, [(10, by - 1), (7, by - 4), (6, by - 8), (6 + sway, by - 11), (8 + sway, by - 13)], 3)
     # 脚(奥→手前の順)
     legs = [(27, 0.5), (15, 0.0), (31, 0.0), (19, 0.5)]
     for lx, off in legs:
@@ -125,7 +127,7 @@ def walk_frame(i):
     cv.ellipse(25, by + 4, 3, 2, 'or', only_on=BODY)
     for sx in (12, 15, 19, 23, 27):
         cv.rect(sx, by - 6, sx, by - 4, 'dk')
-    head(cv, 36, 12 + bob)
+    head(cv, 36, 13 + bob)
     cv.outline()
     return cv
 
@@ -136,7 +138,7 @@ def sit_frame(i):
     tip = [0, 0, 0, 1][i]
     sway = [0, 1, 0, -1][i]
     # しっぽ(地面にそって前へ、先は軽く上がる)
-    tail(cv, [(14, 28), (9, 28), (5, 27 - tip), (3 + sway, 24 - tip), (3 + sway, 21 - tip)], 2)
+    tail(cv, [(15, 28), (10, 28), (6, 27 - tip), (4 + sway, 24 - tip), (4 + sway, 20 - tip)], 3)
     # 胴(座った後ろ足の盛り上がり)
     cv.ellipse(19, 22, 10, 8, 'br')
     cv.ellipse(18, 18, 5, 3, 'or', only_on=BODY)
@@ -147,7 +149,7 @@ def sit_frame(i):
     cv.ellipse(28, 21, 4, 7, 'wh')
     cv.rect(26, 24, 28, 29, 'wh'); cv.rect(30, 24, 32, 29, 'wh')
     cv.rect(26, 28, 28, 29, 'sh'); cv.rect(30, 28, 32, 29, 'sh')
-    head(cv, 30, 12, blink)
+    head(cv, 30, 13, blink)
     cv.outline()
     return cv
 
