@@ -1,9 +1,10 @@
 """ヒーローの背景(部屋のドット絵 assets/hero-bg.png)を作る。
 
 標準ライブラリだけで動く。使い方: python3 tools/make_room_bg.py [出力先]
+昼・夕方・夜の3枚(hero-bg-day.png など)を出力する。
 320x180 の絵を、CSS 側で拡大して表示する(image-rendering: pixelated)。
 左にキャットタワー、中央は挨拶文のために空け、右に窓・爪研ぎ・ペットベッドを置く。
-床には段ボールの爪研ぎと毛糸玉。
+床には段ボールの爪研ぎ。毛糸玉はページ側で動かす。
 """
 import math, struct, sys, zlib
 
@@ -59,84 +60,117 @@ def post(x0, y0, x1, y1):
         rect(x0 + 1, y, x1 - 1, y, 'sisal2')
 
 
-# ---- 壁と床
-for y in range(H):
-    for x in range(W):
-        if y >= FLOOR:
-            px[y][x] = C['floor']
-        elif y >= 96:
-            px[y][x] = C['wall2']          # 腰壁
-rect(0, 95, W - 1, 95, 'base')
-rect(0, FLOOR - 4, W - 1, FLOOR - 1, 'base')   # 巾木
-rect(0, FLOOR - 5, W - 1, FLOOR - 5, 'wall')
-for y in range(FLOOR + 10, H, 14):               # 床板の横線
-    rect(0, y, W - 1, y, 'plank')
-for row, y0 in enumerate(range(FLOOR, H, 14)):    # 床板のつなぎ目
-    for x in range((row * 37) % 53, W, 53):
-        rect(x, y0, x, min(H - 1, y0 + 13), 'plank')
-# 窓から差す光
-for y in range(FLOOR + 3, FLOOR + 36):
-    for x in range(168 + (y - FLOOR) * 2, 250 + (y - FLOOR) * 2):
-        if 0 <= x < W:
-            put(x, y, 'sun')
+MODE = 'day'
+TINT = {'day': None, 'evening': ((255, 160, 100), 0.22), 'night': ((30, 40, 100), 0.55)}
 
-# ---- 窓(右上)
-box(236, 20, 292, 82, 'frame', 'frame2')
-for y in range(23, 80):
-    t = (y - 23) / 57
-    col = tuple(int(C['sky1'][i] * (1 - t) + C['sky2'][i] * t) for i in range(3))
-    rect(239, y, 289, y, col)
-rect(263, 21, 265, 81, 'frame'); rect(237, 49, 291, 51, 'frame')
-ellipse(250, 38, 7, 3, 'cloud'); ellipse(256, 36, 5, 3, 'cloud'); ellipse(280, 66, 7, 3, 'cloud')
-box(231, 16, 297, 20, 'frame2')
-rect(226, 16, 238, 84, 'curt'); rect(290, 16, 302, 84, 'curt')
-for y in range(18, 84, 2):
-    put(229, y, 'curt2'); put(234, y, 'curt2'); put(293, y, 'curt2'); put(298, y, 'curt2')
-rect(226, 14, 302, 16, 'frame2')
 
-# ---- キャットタワー(左)
-box(24, 118, 96, 128, 'cream')                      # 土台
-post(38, 76, 48, 118)                                # 下の柱
-box(52, 92, 90, 118, 'cream')                        # ハウス
-ellipse(71, 112, 8, 11, 'ol'); ellipse(71, 112, 7, 10, 'dark'); rect(63, 112, 79, 118, 'dark')
-box(24, 118, 96, 128, 'cream')                      # 土台(入口の下側を隠す)
-box(26, 70, 92, 78, 'cream')                         # 中段
-post(64, 34, 74, 70)                                 # 上の柱
-box(48, 26, 100, 34, 'cream')                        # 最上段
-for x in range(30, 92, 6):                           # 毛足のざらつき
-    put(x, 72, 'cream2'); put(x + 2, 76, 'cream2')
-for x in range(52, 98, 6):
-    put(x, 28, 'cream2'); put(x + 3, 32, 'cream2')
-rect(54, 35, 54, 56, 'rope')                         # 吊りおもちゃ
-ellipse(54, 59, 3, 3, 'toy'); put(54, 63, 'toy'); put(53, 64, 'toy'); put(55, 64, 'toy')
+def tint_all():
+    t = TINT[MODE]
+    if not t:
+        return
+    (tr, tg, tb), a = t
+    for y in range(H):
+        for x in range(W):
+            r, g, b = px[y][x][:3]
+            px[y][x] = (int(r + (tr - r) * a), int(g + (tg - g) * a), int(b + (tb - b) * a))
 
-# ---- 爪研ぎポール(中央右)
-box(216, 122, 246, 130, 'cream')
-post(226, 92, 236, 122)
-box(220, 86, 242, 92, 'cream')
 
-# ---- 段ボールの爪研ぎ(床)
-for k in range(5):
-    y = 128 + k
-    rect(138 + k * 2, y, 178 - k * 2 + 6, y, 'card')
-box(138, 126, 184, 136, 'card')
-for x in range(141, 183, 3):
-    rect(x, 128, x, 134, 'card2')
+def glass():
+    """窓の外。時間帯ごとに空の色と飾りが変わる。"""
+    sky = {'day': ((150, 208, 255), (214, 238, 255)),
+           'evening': ((126, 134, 206), (255, 178, 128)),
+           'night': ((14, 20, 56), (44, 60, 116))}[MODE]
+    for y in range(23, 80):
+        t = (y - 23) / 57
+        col = tuple(int(sky[0][i] * (1 - t) + sky[1][i] * t) for i in range(3))
+        rect(239, y, 289, y, col)
+    cloud = {'day': (255, 255, 255), 'evening': (255, 218, 204), 'night': None}[MODE]
+    if cloud:
+        ellipse(250, 38, 7, 3, cloud); ellipse(256, 36, 5, 3, cloud); ellipse(280, 66, 7, 3, cloud)
+    if MODE == 'night':
+        for sx, sy in ((246, 30), (255, 44), (270, 28), (282, 58), (249, 66), (286, 36), (258, 72), (274, 50)):
+            put(sx, sy, (255, 252, 230))
+        ellipse(276, 38, 6, 6, (252, 244, 200)); ellipse(279, 36, 5, 5, (24, 34, 80))
+    if MODE == 'evening':
+        ellipse(264, 80, 16, 8, (255, 214, 150))
+    rect(263, 21, 265, 81, 'frame'); rect(237, 49, 291, 51, 'frame')   # 窓の桟
 
-# ---- ペットベッド(右)
-ellipse(280, 134, 30, 11, 'ol')
-ellipse(280, 133, 29, 10, 'bed')
-ellipse(280, 130, 22, 6, 'bedin')
-ellipse(280, 131, 21, 4, 'bed2')
-ellipse(280, 129, 19, 3, 'bedin')
-for x in range(258, 304, 5):
-    put(x, 136, 'bed2')
 
-# ---- 小物
-ellipse(196, 140, 5, 5, 'ol'); ellipse(196, 140, 4, 4, 'yarn')
-for t in range(-3, 4):
-    put(196 + t, 140 + (t % 2), 'yarn2')
-put(190, 143, 'yarn2'); put(191, 144, 'yarn2'); put(192, 145, 'yarn2')
+def build(mode):
+    global px, MODE
+    MODE = mode
+    px = [[C['wall']] * W for _ in range(H)]
+    # ---- 壁と床
+    for y in range(H):
+        for x in range(W):
+            if y >= FLOOR:
+                px[y][x] = C['floor']
+            elif y >= 96:
+                px[y][x] = C['wall2']          # 腰壁
+    rect(0, 95, W - 1, 95, 'base')
+    rect(0, FLOOR - 4, W - 1, FLOOR - 1, 'base')   # 巾木
+    rect(0, FLOOR - 5, W - 1, FLOOR - 5, 'wall')
+    for y in range(FLOOR + 10, H, 14):               # 床板の横線
+        rect(0, y, W - 1, y, 'plank')
+    for row, y0 in enumerate(range(FLOOR, H, 14)):    # 床板のつなぎ目
+        for x in range((row * 37) % 53, W, 53):
+            rect(x, y0, x, min(H - 1, y0 + 13), 'plank')
+    # 窓から差す光(夜はなし)
+    for y in range(FLOOR + 3, FLOOR + 36 if MODE != 'night' else FLOOR + 3):
+        for x in range(168 + (y - FLOOR) * 2, 250 + (y - FLOOR) * 2):
+            if 0 <= x < W:
+                put(x, y, 'sun')
+
+    # ---- 窓(右上)
+    box(236, 20, 292, 82, 'frame', 'frame2')
+    box(231, 16, 297, 20, 'frame2')
+    rect(226, 16, 238, 84, 'curt'); rect(290, 16, 302, 84, 'curt')
+    for y in range(18, 84, 2):
+        put(229, y, 'curt2'); put(234, y, 'curt2'); put(293, y, 'curt2'); put(298, y, 'curt2')
+    rect(226, 14, 302, 16, 'frame2')
+
+    # ---- キャットタワー(左)
+    box(24, 118, 96, 128, 'cream')                      # 土台
+    post(38, 76, 48, 118)                                # 下の柱
+    box(52, 92, 90, 118, 'cream')                        # ハウス
+    ellipse(71, 112, 8, 11, 'ol'); ellipse(71, 112, 7, 10, 'dark'); rect(63, 112, 79, 118, 'dark')
+    box(24, 118, 96, 128, 'cream')                      # 土台(入口の下側を隠す)
+    box(26, 70, 92, 78, 'cream')                         # 中段
+    post(64, 34, 74, 70)                                 # 上の柱
+    box(48, 26, 100, 34, 'cream')                        # 最上段
+    for x in range(30, 92, 6):                           # 毛足のざらつき
+        put(x, 72, 'cream2'); put(x + 2, 76, 'cream2')
+    for x in range(52, 98, 6):
+        put(x, 28, 'cream2'); put(x + 3, 32, 'cream2')
+    rect(54, 35, 54, 56, 'rope')                         # 吊りおもちゃ
+    ellipse(54, 59, 3, 3, 'toy'); put(54, 63, 'toy'); put(53, 64, 'toy'); put(55, 64, 'toy')
+
+    # ---- 爪研ぎポール(中央右)
+    box(216, 122, 246, 130, 'cream')
+    post(226, 92, 236, 122)
+    box(220, 86, 242, 92, 'cream')
+
+    # ---- 段ボールの爪研ぎ(床)
+    for k in range(5):
+        y = 128 + k
+        rect(138 + k * 2, y, 178 - k * 2 + 6, y, 'card')
+    box(138, 126, 184, 136, 'card')
+    for x in range(141, 183, 3):
+        rect(x, 128, x, 134, 'card2')
+
+    # ---- ペットベッド(右)
+    ellipse(280, 134, 30, 11, 'ol')
+    ellipse(280, 133, 29, 10, 'bed')
+    ellipse(280, 130, 22, 6, 'bedin')
+    ellipse(280, 131, 21, 4, 'bed2')
+    ellipse(280, 129, 19, 3, 'bedin')
+    for x in range(258, 304, 5):
+        put(x, 136, 'bed2')
+
+    tint_all()
+    glass()
+    return px
+
 
 def write_png(path, rows):
     h, w = len(rows), len(rows[0])
@@ -150,4 +184,6 @@ def write_png(path, rows):
 
 
 if __name__ == '__main__':
-    write_png(sys.argv[1] if len(sys.argv) > 1 else 'assets/hero-bg.png', px)
+    base = sys.argv[1] if len(sys.argv) > 1 else 'assets/hero-bg.png'
+    for m in ('day', 'evening', 'night'):
+        write_png(base.replace('.png', '-%s.png' % m), build(m))

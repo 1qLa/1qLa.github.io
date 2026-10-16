@@ -27,7 +27,9 @@
   .wrap { max-width: 720px; margin: 0 auto; padding: 0 16px; }
   /* ヒーロー: 全画面の背景(画像 or 動画)と中央の挨拶 */
   .hero { position: relative; min-height: 100vh; min-height: 100svh; display: grid; place-items: center; color: #1a1a1a; text-align: center; overflow: hidden; background: #d8eeff; }
-  .hero-bg { position: absolute; inset: 0; z-index: 0; background: #f6e8d0 url("assets/hero-bg.png?v=3") center / cover no-repeat; image-rendering: pixelated; }
+  .hero-bg { position: absolute; inset: 0; z-index: 0; background: #f6e8d0 url("assets/hero-bg-day.png?v=4") center / cover no-repeat; image-rendering: pixelated; }
+  .hero[data-mode="evening"] .hero-bg { background-color: #f7d8b8; background-image: url("assets/hero-bg-evening.png?v=4"); }
+  .hero[data-mode="night"] .hero-bg { background-color: #7f7e94; background-image: url("assets/hero-bg-night.png?v=4"); }
   .hero-bg video { width: 100%; height: 100%; object-fit: cover; }
   .hero::after { content: ""; position: absolute; inset: 0; z-index: 1; background: rgba(255, 255, 255, .12); }
   .hero-inner { position: relative; z-index: 2; padding: 0 16px; }
@@ -37,8 +39,18 @@
   .scroll-hint { position: absolute; z-index: 2; bottom: 24px; left: 50%; transform: translateX(-50%); color: #3b4a5e; font-size: .8rem; text-decoration: none; opacity: .8; }
   /* ドット絵の猫(スプライトシート: 48x32 のコマが8つ。0-3 歩き、4-7 座り) */
   .cat { --s: 4; position: absolute; z-index: 2; left: 0; bottom: 9vh; width: calc(48px * var(--s)); height: calc(32px * var(--s)); pointer-events: none; will-change: transform; }
-  .cat-sprite { width: 100%; height: 100%; background: url("assets/cat-sprite.png?v=3") 0 0 / calc(384px * var(--s)) calc(32px * var(--s)) no-repeat; background-position: calc(var(--f, 4) * -48px * var(--s)) 0; image-rendering: pixelated; }
+  .cat-sprite { width: 100%; height: 100%; background: url("assets/cat-sprite.png?v=4") 0 0 / calc(576px * var(--s)) calc(32px * var(--s)) no-repeat; background-position: calc(var(--f, 4) * -48px * var(--s)) 0; image-rendering: pixelated; }
   .cat.left .cat-sprite { transform: scaleX(-1); }
+  .yarn { --s: 4; position: absolute; z-index: 2; left: 0; bottom: calc(9vh + 2px * var(--s)); width: calc(10px * var(--s)); height: calc(10px * var(--s)); background: url("assets/yarn.png?v=4") 0 0 / 100% 100% no-repeat; image-rendering: pixelated; pointer-events: none; will-change: transform; }
+  .clock { position: absolute; z-index: 3; top: 64px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; align-items: baseline; padding: 4px 14px; border-radius: 999px; background: rgba(255, 255, 255, .55); font-size: .85rem; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .clock b { font-size: 1rem; letter-spacing: .04em; }
+  .hero[data-mode="night"] { color: #f4f1ff; }
+  .hero[data-mode="night"]::after { background: transparent; }
+  .hero[data-mode="night"] header strong { color: #f4f1ff; }
+  .hero[data-mode="night"] nav a { color: #cfd0ec; }
+  .hero[data-mode="night"] nav a:hover { color: #fff; }
+  .hero[data-mode="night"] .scroll-hint { color: #cfd0ec; }
+  .hero[data-mode="night"] .clock { background: rgba(20, 26, 60, .55); }
   header { position: absolute; top: 0; left: 0; right: 0; z-index: 3; }
   header .wrap { max-width: 960px; display: flex; justify-content: space-between; align-items: center; padding-top: 16px; padding-bottom: 16px; }
   header strong { font-size: 1rem; color: #1a1a1a; }
@@ -64,7 +76,7 @@
   .scene .caption { position: absolute; left: 12px; bottom: 8px; margin: 0; font-size: .75rem; color: #2f5d3a; }
   footer { border-top: 1px solid var(--line); padding: 24px 0; color: var(--muted); font-size: .85rem; }
   @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .hero-bg video { display: none; } }
-  @media (max-width: 600px) { .hero-bg { background-size: auto 45%; background-position: 12% 100%; } .cat { --s: 2; } }
+  @media (max-width: 600px) { .hero-bg { background-size: auto 45%; background-position: 12% 100%; } .cat, .yarn { --s: 2; } .clock { top: 60px; } }
   @media (max-width: 480px) {
       nav a { margin-left: 10px; font-size: .8rem; }
   }
@@ -73,6 +85,7 @@
 <body>
 <div class="hero">
   <div class="hero-bg" aria-hidden="true"></div>
+  <div class="yarn" id="yarn" aria-hidden="true"></div>
   <div class="cat" id="cat" aria-hidden="true"><div class="cat-sprite"></div></div>
   <header>
     <div class="wrap">
@@ -85,6 +98,7 @@
       </nav>
     </div>
   </header>
+  <div class="clock" id="clock"><b id="clock-time">--:--</b><span id="clock-act"></span></div>
   <div class="hero-inner">
     <h1>Hi, I'm 1qLa.</h1>
     <p class="role">Web, embedded and cloud projects</p>
@@ -169,52 +183,151 @@
 </footer>
 
 <script>
-// ヒーローのドット絵の猫: 歩く → 座ってまばたき・しっぽを振る → また歩く
+// ヒーローの時計と、時間帯で変わる猫の行動(寝る / 遊ぶ / 窓を眺める / 歩き回る)と部屋の色
+// 動作確認用: ?time=23:30 のようにURLへ付けると、その時刻から始まる
 (function () {
   var hero = document.querySelector('.hero');
   var cat = document.getElementById('cat');
-  if (!hero || !cat) return;
+  var yarn = document.getElementById('yarn');
+  var clockTime = document.getElementById('clock-time');
+  var clockAct = document.getElementById('clock-act');
+  if (!hero || !cat || !yarn) return;
   var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var SIT_TAIL = [0, 1, 0, 3];                 // 座りのしっぽのコマ(4-7 のうちの番号)
-  var x = 0, dir = 1, target = 0, state = 'sit', stateUntil = 0, visible = true;
+
+  // ---- 時刻
+  var offset = 0;
+  var m = /^(\d{1,2}):(\d{2})$/.exec(new URLSearchParams(location.search).get('time') || '');
+  if (m) { var t0 = new Date(); t0.setHours(+m[1], +m[2], 0, 0); offset = t0 - new Date(); }
+  var clock = function () { return new Date(Date.now() + offset); };
+  var modeOf = function (h) { return (h >= 6.5 && h < 17) ? 'day' : ((h >= 5 && h < 6.5) || (h >= 17 && h < 19.5)) ? 'evening' : 'night'; };
+  var actOf = function (h) {
+    if (h >= 22 || h < 6) return 'sleep';
+    if (h >= 9 && h < 12) return 'play';
+    if (h >= 14 && h < 17) return 'window';
+    if (h >= 17 && h < 19) return 'play';
+    return 'wander';
+  };
+  var LABEL = { sleep: 'Sleeping', play: 'Playing with yarn', window: 'Watching the window', wander: 'Wandering around' };
+
+  // ---- 背景絵(320x180)の座標を、画面の座標に直す(CSS の表示のしかたと合わせる)
+  var geom = function () {
+    var W = hero.clientWidth, H = hero.clientHeight, sc, ox, oy;
+    if (matchMedia('(max-width: 600px)').matches) { sc = H * 0.45 / 180; ox = (W - 320 * sc) * 0.12; oy = H - 180 * sc; }
+    else { sc = Math.max(W / 320, H / 180); ox = (W - 320 * sc) / 2; oy = (H - 180 * sc) / 2; }
+    return { W: W, H: H, sc: sc, X: function (lx) { return ox + lx * sc; }, Y: function (ly) { return oy + ly * sc; } };
+  };
+  var scale = function () { return parseFloat(getComputedStyle(cat).getPropertyValue('--s')); };
   var catW = function () { return cat.offsetWidth; };
   var maxX = function () { return Math.max(0, hero.clientWidth - catW()); };
+
+  // ---- 猫(x は猫の左端。フレーム: 0-3 歩き / 4-7 座り / 8-9 寝る / 10-11 構える)
+  var SIT_TAIL = [0, 1, 0, 3];
+  var x = 0, dir = 1, act = null, S = 'sit', dest = 0, after = 'sit', until = 0, tS = 0, onBed = false, visible = true;
+  var bx = 0, bv = 0, ballRest = true;          // 毛糸玉(中心の x と速度)
   var setFrame = function (f) { cat.style.setProperty('--f', f); };
   var place = function () {
     cat.style.transform = 'translateX(' + Math.round(x) + 'px)';
     cat.classList.toggle('left', dir < 0);
+    var w = yarn.offsetWidth;
+    yarn.style.transform = 'translateX(' + Math.round(bx - w / 2) + 'px) rotate(' + Math.round(bx / (w / 2) * 57.3) + 'deg)';
   };
-  var pickTarget = function () {
-    var m = maxX(), t;
-    do { t = m * (0.05 + Math.random() * 0.9); } while (Math.abs(t - x) < m * 0.25 && m > 0);
-    target = t; dir = t > x ? 1 : -1;
+  var floor = function () { cat.style.bottom = ''; onBed = false; };
+  var goTo = function (d, a) { dest = Math.max(0, Math.min(maxX(), d)); dir = dest > x ? 1 : -1; after = a; S = 'walk'; tS = 0; floor(); };
+  var wanderTarget = function () {
+    var mx = maxX(), t;
+    do { t = mx * (0.05 + Math.random() * 0.9); } while (Math.abs(t - x) < mx * 0.25 && mx > 0);
+    return t;
   };
-  x = maxX() * 0.75; place(); setFrame(4);
-  if (reduce) return;
+
+  var start = function (a, now) {
+    act = a;
+    var g = geom(), w = catW();
+    if (a === 'sleep') goTo(g.X(285) - w / 2, 'sleep');
+    else if (a === 'window') goTo(g.X(262) - w / 2, 'gaze');
+    else if (a === 'play') { ballRest = false; S = 'chase'; tS = 0; floor(); }
+    else { goTo(wanderTarget(), 'sit'); }
+    if (a !== 'play') { dir = dir || 1; }
+  };
+
+  var restBall = function () { bx = geom().X(200); bv = 0; };
+
+  // ---- 時計の表示(1秒ごと)
+  var lastMin = -1;
+  var tickClock = function (now) {
+    var d = clock(), h = d.getHours() + d.getMinutes() / 60;
+    hero.dataset.mode = modeOf(h);
+    if (d.getMinutes() !== lastMin) {
+      lastMin = d.getMinutes();
+      clockTime.textContent = ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
+    }
+    var a = actOf(h);
+    clockAct.textContent = '· ' + LABEL[a];
+    if (a !== act) start(a, now);
+  };
+
+  // ---- 動かさない場合(視差効果を減らす設定): 時間帯の姿勢で止める
+  var still = function () {
+    tickClock(0);
+    var g = geom(), w = catW(), a = act;
+    restBall();
+    if (a === 'sleep') { x = g.X(285) - w / 2; setFrame(8); cat.style.bottom = (g.H - (g.Y(137) + 2 * scale())) + 'px'; }
+    else if (a === 'window') { x = g.X(262) - w / 2; setFrame(4); }
+    else { x = maxX() * 0.75; setFrame(4); }
+    place();
+  };
+
+  restBall(); x = maxX() * 0.75; place(); setFrame(4);
+  if (reduce) { still(); setInterval(still, 30000); addEventListener('resize', still); return; }
   new IntersectionObserver(function (e) { visible = e[0].isIntersecting; }).observe(hero);
 
-  var last = performance.now(), walkT = 0;
+  var last = performance.now(), lastClock = 0;
   function tick(now) {
     requestAnimationFrame(tick);
     var dt = Math.min((now - last) / 1000, 0.1); last = now;
+    if (now - lastClock > 1000) { lastClock = now; tickClock(now); }
     if (!visible) return;
-    var speed = 14 * parseFloat(getComputedStyle(cat).getPropertyValue('--s'));   // 1コマ=1pxの絵を拡大した分だけ進む
-    if (state === 'walk') {
-      walkT += dt;
-      setFrame(Math.floor(walkT / 0.16) % 4);
+    var s = scale(), g = geom(), w = catW(), speed = 14 * s;
+
+    // 毛糸玉を転がす
+    if (Math.abs(bv) > 4) {
+      bx += bv * dt; bv *= Math.max(0, 1 - 1.5 * dt);
+      var lo = yarn.offsetWidth, hi = g.W - yarn.offsetWidth;
+      if (bx < lo) { bx = lo; bv = -bv * 0.6; } if (bx > hi) { bx = hi; bv = -bv * 0.6; }
+    } else bv = 0;
+
+    if (S === 'walk') {
+      tS += dt; setFrame(Math.floor(tS / 0.16) % 4);
       x += dir * speed * dt;
-      if ((dir > 0 && x >= target) || (dir < 0 && x <= target)) {
-        x = target; state = 'sit'; stateUntil = now + 3500 + Math.random() * 3500;
+      if ((dir > 0 && x >= dest) || (dir < 0 && x <= dest)) {
+        x = dest; tS = 0;
+        if (after === 'sleep') { S = 'sleep'; dir = 1; onBed = true; }
+        else if (after === 'gaze') { S = 'gaze'; dir = 1; }
+        else { S = 'sit'; until = now + 3500 + Math.random() * 3500; }
       }
-    } else {
+    } else if (S === 'sit' || S === 'gaze') {
       var t = now % 1600;
-      var blink = (now % 4200) < 180;
-      setFrame(4 + (blink ? 2 : SIT_TAIL[Math.floor(t / 400)]));
-      if (now >= stateUntil) { pickTarget(); state = 'walk'; walkT = 0; }
+      setFrame(4 + ((now % 4200) < 180 ? 2 : SIT_TAIL[Math.floor(t / 400)]));
+      if (S === 'sit' && now >= until) goTo(wanderTarget(), 'sit');
+    } else if (S === 'sleep') {
+      setFrame(8 + (Math.floor(now / 1400) % 2));
+      cat.style.bottom = (g.H - (g.Y(137) + 2 * s)) + 'px';
+    } else if (S === 'chase') {           // 毛糸玉を追う → 構える → 前足で転がす
+      var cx = x + w / 2, gap = bx - cx;
+      if (Math.abs(gap) > w * 0.55) {
+        dir = gap > 0 ? 1 : -1; tS += dt; setFrame(Math.floor(tS / 0.11) % 4); x += dir * speed * 1.7 * dt;
+      } else { S = 'crouch'; tS = 0; dir = gap >= 0 ? 1 : -1; }
+    } else if (S === 'crouch') {
+      tS += dt; setFrame(10 + (Math.floor(tS / 0.14) % 2));
+      if (tS > 0.7) {
+        var away = (bx > g.W * 0.8) ? -1 : (bx < g.W * 0.2) ? 1 : dir;
+        bv = away * (150 + Math.random() * 170) * (s / 4);
+        S = 'chase'; tS = 0;
+      }
     }
+    x = Math.max(0, Math.min(maxX(), x));
     place();
   }
-  stateUntil = performance.now() + 2500;
+  tickClock(0);
   requestAnimationFrame(tick);
   addEventListener('resize', function () { x = Math.min(x, maxX()); place(); });
 })();

@@ -1,12 +1,13 @@
 """ドット絵の猫のスプライトシート(assets/cat-sprite.png)を作る。
 
 標準ライブラリだけで動く。使い方: python3 tools/make_cat_sprite.py [出力先] [プレビュー出力先]
-シート: 48x32 のコマを横に8つ(歩き4 + 座り4)。猫は右向き。
+シート: 48x32 のコマを横に12つ(0-3 歩き、4-7 座り、8-9 寝る、10-11 遊びで構える)。猫は右向き。
+毛糸玉は assets/yarn.png(10x10)。
 """
 import math, struct, sys, zlib
 
 W, H = 48, 32
-N_WALK, N_SIT = 4, 4
+N_WALK, N_SIT, N_SLEEP, N_CROUCH = 4, 4, 2, 2
 
 PAL = {
     'ol': (43, 30, 28),      # 輪郭
@@ -71,7 +72,7 @@ def tail(cv, pts, r=3):
     cv.put(x - 1, y - r, 'lt'); cv.put(x + 1, y - r, 'lt')
 
 
-def head(cv, cx, cy, blink=False):
+def head(cv, cx, cy, blink=False, with_ruff=True):
     # 頭: 上は広く、あごに向けて細い(三角寄り)
     cv.ellipse(cx, cy - 1, 7.2, 5.6, 'br')
     cv.ellipse(cx, cy + 2, 5.4, 3.8, 'br')
@@ -97,7 +98,8 @@ def head(cv, cx, cy, blink=False):
         cv.rect(cx + 3, cy - 2, cx + 4, cy - 1, 'ey'); cv.put(cx + 4, cy - 1, 'pu'); cv.put(cx + 3, cy - 1, 'pu')
     # ほほの毛と、胸のたてがみ(大きな白い襟毛)
     cv.put(cx - 7, cy + 1, 'lt'); cv.put(cx + 7, cy + 1, 'lt')
-    ruff(cv, cx, cy)
+    if with_ruff:
+        ruff(cv, cx, cy)
 
 
 def ruff(cv, cx, cy):
@@ -165,6 +167,62 @@ def sit_frame(i):
     return cv
 
 
+def crouch_frame(i):
+    """遊びで構える姿勢: 体を低くして、お尻を少し上げ、しっぽをぴくぴくさせる。"""
+    cv = Canvas()
+    tw = (0, 1)[i]
+    tail(cv, [(9, 25), (6, 23 - tw), (4, 20 - tw)], 3)
+    cv.ellipse(14, 22, 6.5, 6, 'br')                 # 持ち上げたお尻
+    cv.ellipse(25, 24, 11, 5, 'br')                  # 低い胴
+    cv.ellipse(19, 19, 4, 2, 'or', only_on=BODY)
+    for sx in (11, 14, 18, 22):
+        cv.rect(sx, 17, sx, 19, 'dk')
+    cv.rect(33, 27, 41, 29, 'br')                    # 前に伸ばした前足
+    cv.rect(40, 27, 44, 29, 'wh')
+    cv.rect(9, 28, 12, 29, 'wh')                     # 後ろ足の先
+    head(cv, 35, 20, with_ruff=False)
+    cv.ellipse(35, 25, 4, 2, 'wh')                   # 低い位置の胸の白
+    cv.outline()
+    return cv
+
+
+def sleep_frame(i):
+    """丸くなって寝る。i=1 は息を吸って体が少しふくらむ。"""
+    cv = Canvas()
+    cv.ellipse(23, 23, 15, 6 + i, 'br')
+    cv.ellipse(18, 19 - i, 5, 2.5, 'or', only_on=BODY)
+    for sx in (11, 15, 19, 23, 27):
+        cv.rect(sx, 18 - i, sx, 20 - i, 'dk')
+    tail(cv, [(8, 25), (11, 27), (18, 27), (26, 27)], 2)
+    head(cv, 34, 22, blink=True, with_ruff=False)
+    cv.ellipse(34, 27, 5, 2, 'wh')
+    cv.rect(39, 27, 43, 28, 'wh')                    # 前足の白
+    cv.outline()
+    return cv
+
+
+YARN = {'r': (224, 82, 82), 'd': (186, 56, 60), 'l': (244, 128, 124)}
+YARN_ART = [
+    "...rrrr...",
+    "..rllrrr..",
+    ".rlrrdrrr.",
+    ".rrrdrrdr.",
+    "rrdrrrrrdr",
+    "rrrrdrrrrr",
+    ".rdrrrdrr.",
+    ".rrrdrrrr.",
+    "..rrrrdr..",
+    "...rrrr...",
+]
+
+
+def yarn_rows():
+    rows = []
+    for line in YARN_ART:
+        rows.append([YARN[ch] + (255,) if ch in YARN else (0, 0, 0, 0) for ch in line])
+    return rows
+
+
 def write_png(path, rows):
     h, w = len(rows), len(rows[0])
     raw = b''.join(b'\x00' + bytes(v for px in row for v in px) for row in rows)
@@ -177,7 +235,8 @@ def write_png(path, rows):
 
 
 def sheet(scale=1):
-    frames = [walk_frame(i) for i in range(N_WALK)] + [sit_frame(i) for i in range(N_SIT)]
+    frames = ([walk_frame(i) for i in range(N_WALK)] + [sit_frame(i) for i in range(N_SIT)]
+              + [sleep_frame(i) for i in range(N_SLEEP)] + [crouch_frame(i) for i in range(N_CROUCH)])
     rows = []
     for y in range(H):
         row = []
@@ -194,5 +253,6 @@ def sheet(scale=1):
 if __name__ == '__main__':
     out = sys.argv[1] if len(sys.argv) > 1 else 'assets/cat-sprite.png'
     write_png(out, sheet())
+    write_png(out.replace('cat-sprite', 'yarn'), yarn_rows())
     if len(sys.argv) > 2:
         write_png(sys.argv[2], sheet(6))
