@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="en">
+<html lang="ja">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>1qLa | Portfolio</title>
-<meta name="description" content="Portfolio of 1qLa: web, embedded and cloud projects">
+<meta name="description" content="1qLaのポートフォリオ。Web・組み込み・クラウドの制作物をまとめています。">
 <style>
   :root {
     --bg: #ffffff;
@@ -33,7 +33,7 @@
   .hero-bg video { width: 100%; height: 100%; object-fit: cover; }
   .hero::after { content: ""; position: absolute; inset: 0; z-index: 1; background: rgba(255, 255, 255, .12); }
   .hero-inner { position: relative; z-index: 2; padding: 0 16px; }
-  .hero h1 { font-size: clamp(2rem, 6vw, 3.5rem); line-height: 1.3; margin: 0 0 16px; letter-spacing: .02em; }
+  .hero h1 { font-size: clamp(1.6rem, 3.4vw, 2.5rem); line-height: 1.3; margin: 0 0 16px; letter-spacing: .02em; }
   .hero .role { margin: 0 0 8px; opacity: .9; }
   .hero .lead { margin: 0 auto; max-width: 28em; opacity: .85; font-size: .95rem; }
   .scroll-hint { position: absolute; z-index: 2; bottom: 24px; left: 50%; transform: translateX(-50%); color: #3b4a5e; font-size: .8rem; text-decoration: none; opacity: .8; }
@@ -106,8 +106,8 @@
   </header>
   <div class="clock" id="clock" hidden><b id="clock-time">--:--</b><span id="clock-act"></span></div>
   <div class="hero-inner">
-    <h1>Hi, I'm 1qLa.</h1>
-    <p class="role">Web, embedded and cloud projects</p>
+    <h1>はじめまして、1qLaです。</h1>
+    <p class="role">Web・組み込み・クラウドの制作物をつくっています。</p>
   </div>
   <a class="scroll-hint" href="#about">Scroll ↓</a>
 </div>
@@ -115,7 +115,7 @@
 <main class="wrap">
   <section id="about">
     <h2>About</h2>
-    <p>I like building things that connect software with the real world: a 3D learning game for the browser, a smart light unlocked by an NFC tag, an e-paper calendar, and AWS monitoring written in Terraform.</p>
+    <p>ソフトウェアと現実の世界をつなぐものづくりが好きです。ブラウザで動く3D学習ゲーム、NFCで開くスマートライト、電子ペーパーのカレンダー、TerraformによるAWSの監視をつくっています。</p>
   </section>
 
   <section id="skills">
@@ -140,43 +140,45 @@
     <article class="work">
       <h3>AWS Drift Detection and Slack Alerts</h3>
       <p class="stack">Terraform / AWS (CloudTrail, EventBridge, SNS, SQS, Lambda, KMS) / Python</p>
-      <p>Terraform cannot see a change made by hand in the AWS console (for example, opening a security group) until the next <code>terraform plan</code>. This system detects such manual changes as soon as they happen and notifies Slack, so unmanaged changes are found early.</p>
-      <ol class="flow" aria-label="Architecture: CloudTrail to EventBridge to SNS to SQS to Lambda to Slack">
-        <li><b>CloudTrail</b><small>records the API call</small></li>
-        <li><b>EventBridge</b><small>filters the change</small></li>
-        <li><b>SNS</b><small>routes the alert</small></li>
-        <li><b>SQS</b><small>buffers and retries</small></li>
-        <li><b>Lambda</b><small>formats the message</small></li>
-        <li><b>Slack</b><small>alerts the team</small></li>
+      <p>Terraformは、AWSコンソールで手作業された変更(例: セキュリティグループの開放)に、次に <code>terraform plan</code> を実行するまで気づけません。このシステムは、そうした手動変更をすぐに検知してSlackに通知し、管理外の変更を早く見つけます。</p>
+      <ol class="flow" aria-label="構成: CloudTrail、EventBridge、SNS、SQS、Lambda、Slackの順に流れる">
+        <li><b>CloudTrail</b><small>API操作を記録</small></li>
+        <li><b>EventBridge</b><small>変更を絞り込む</small></li>
+        <li><b>SNS</b><small>通知を振り分ける</small></li>
+        <li><b>SQS</b><small>ためて再送に備える</small></li>
+        <li><b>Lambda</b><small>メッセージを整える</small></li>
+        <li><b>Slack</b><small>チームに通知</small></li>
       </ol>
-      <p>The Slack webhook URL kept in the Lambda environment variable is encrypted with AWS KMS.</p>
+      <p>Lambdaの環境変数に置いたSlack Webhook URLは、AWS KMSで暗号化しています。</p>
       <p class="links"><a href="https://github.com/1qLa/aws_Terraform">GitHub</a><a href="https://canva.link/nnh28ewd2jvgcx9">Slides</a></p>
     </article>
 
     <article class="work">
-      <div class="media scene" id="momo-scene" role="img" aria-label="Momotaro, the game's hero, walking across a field">
+      <div class="media scene" id="momo-scene" role="img" aria-label="ゲームの主人公の桃太郎が、野原を歩いている">
         <canvas></canvas>
-        <p class="caption">Live 3D model from the game</p>
+        <p class="caption">ゲームの3Dモデルが、ブラウザ上で動いています</p>
       </div>
       <h3>Packets of Long Ago (昔々のパケットたち)</h3>
       <p class="stack">Vue.js 3 / Three.js / Blender</p>
-      <p>A 3D learning game that explains networking basics (IP addresses, routers, switches) through the folktale of Momotaro. I came up with the concept and built the frontend: 3D rendering, collision handling and the UI logic. It won the Concept Award at a school exhibition and was shown at CEATEC 2026.</p>
+      <p>桃太郎の昔話を通して、ネットワークの基礎(IPアドレス、ルータ、スイッチ)を学べる3Dの学習ゲームです。企画を考え、フロントエンド(3D描画、衝突判定、UIロジック)を実装しました。</p>
+      <p>学内展示でコンセプト賞を受賞し、CEATEC 2026 でも展示しました。</p>
       <p class="links"><a href="https://pingers.tenma.tech/">Play</a><a href="https://github.com/1qLa/networkgame">GitHub</a><a href="https://canva.link/4kcet6nm0iyj8h1">Slides</a></p>
     </article>
 
     <article class="work">
-      <div class="media"><img src="assets/works/nfc_light.png" alt="LighTouch title slide" width="1440" height="810" loading="lazy"></div>
+      <div class="media"><img src="assets/works/nfc_light.png" alt="LighTouchのタイトルスライド" width="1440" height="810" loading="lazy"></div>
       <h3>LighTouch</h3>
       <p class="stack">Kotlin (Android) / ESP32-C3 / PN532 / BLE</p>
-      <p>A smart light that works like a lock: it only switches on when a registered NFC tag is held to it. An Android app connects over BLE for setup and key management, and settings can only be changed while a physical button is pressed.</p>
+      <p>鍵のように使えるスマートライトで、登録したNFCタグをかざしたときだけ点灯します。AndroidアプリからBLEで接続して、設定と鍵の管理を行います。</p>
+      <p>設定の変更は、本体の物理ボタンを押している間だけできます。</p>
       <p class="links"><a href="https://github.com/1qLa/nfc_light">GitHub</a><a href="https://canva.link/zlat5jei4h3g1fg">Slides</a></p>
     </article>
 
     <article class="work">
-      <div class="media"><img src="assets/works/calendar_epaper.png" alt="E-paper calendar showing a monthly view" width="577" height="432" loading="lazy" style="object-fit: contain; background: #fff;"></div>
+      <div class="media"><img src="assets/works/calendar_epaper.png" alt="月表示の電子ペーパーカレンダー" width="577" height="432" loading="lazy" style="object-fit: contain; background: #fff;"></div>
       <h3>E-Paper Calendar</h3>
       <p class="stack">M5Paper (C++) / Python, FastAPI / Docker, Nginx</p>
-      <p>An IoT calendar for M5Paper that shows the latest events from Google Calendar. The server renders the calendar as an image, and the device uses ETag caching to skip redraws when nothing has changed, which saves power.</p>
+      <p>Googleカレンダーの最新の予定を表示する、M5Paper用のIoT電子ペーパーカレンダーです。サーバーが予定を画像にし、端末はETagで変更の有無を確かめて、変わっていないときは再描画を省いて電力を節約します。</p>
       <p class="links"><a href="https://github.com/1qLa/calendar_epaper">GitHub</a><a href="https://canva.link/rsez2alt8vggqhj">Slides</a></p>
     </article>
 
@@ -184,7 +186,7 @@
 
   <section id="contact">
     <h2>Contact</h2>
-    <p>Feel free to reach out by email or through GitHub.</p>
+    <p>ご相談やご質問は、メールかGitHubからお気軽にご連絡ください。</p>
     <ul class="tags">
       <li><a href="https://github.com/1qLa">GitHub</a></li>
       <li><a href="mailto:kane170617@gmail.com">kane170617@gmail.com</a></li>
@@ -222,7 +224,7 @@
     if (h >= 17 && h < 19) return 'play';
     return 'wander';
   };
-  var LABEL = { sleep: 'Sleeping', play: 'Playing with yarn', window: 'Watching the window', wander: 'Wandering around' };
+  var LABEL = { sleep: 'ねむっている', play: '毛糸玉で遊んでいる', window: '窓を眺めている', wander: '歩き回っている' };
 
   // ---- 背景絵(320x180)の座標を、画面の座標に直す(CSS の表示のしかたと合わせる)
   var geom = function () {
