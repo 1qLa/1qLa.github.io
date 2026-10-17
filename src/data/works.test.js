@@ -22,6 +22,12 @@ describe('works', () => {
     }
   })
 
+  it('発表スライドのリンクは載せない(READMEにある)', () => {
+    for (const w of works) {
+      for (const l of w.links) expect(l.href).not.toContain('canva')
+    }
+  })
+
   it('画像つきの作品には代替テキストがある', () => {
     for (const w of works) {
       if (w.media?.kind === 'image') expect(w.media.alt).toBeTruthy()
@@ -48,6 +54,23 @@ describe('skillGroups', () => {
     for (const g of skillGroups) {
       expect(g.title).toBeTruthy()
       expect(g.items.length).toBeGreaterThan(0)
+    }
+  })
+
+  it('すべてのスキルに名前とアイコン(図形データと色)がある', () => {
+    for (const g of skillGroups) {
+      for (const item of g.items) {
+        expect(item.name).toBeTruthy()
+        expect(item.icon.path).toMatch(/^M/)
+        expect(item.icon.hex).toMatch(/^[0-9A-Fa-f]{6}$/)
+      }
+    }
+  })
+
+  it('同じグループに、同じ名前が重複していない', () => {
+    for (const g of skillGroups) {
+      const names = g.items.map((i) => i.name)
+      expect(new Set(names).size).toBe(names.length)
     }
   })
 })

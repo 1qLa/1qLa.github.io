@@ -1,5 +1,6 @@
 import { lazy, Suspense } from 'react'
 import Flow from './Flow'
+import Icon from './Icon'
 import InlineText from './InlineText'
 
 // Three.js は重いので、桃太郎の枠が必要になってから別ファイルとして読み込む
@@ -40,7 +41,12 @@ export default function WorkCard({ work }) {
           : <Flow key={i} label={block.flow.label} steps={block.flow.steps} />
       )}
       <p className="links">
-        {work.links.map((l) => <a key={l.href} href={l.href}>{l.label}</a>)}
+        {work.links.map((l) => (
+          <a key={l.href} href={l.href}>
+            {l.icon && <Icon icon={l.icon} color="currentColor" />}
+            {l.label}
+          </a>
+        ))}
       </p>
     </article>
   )

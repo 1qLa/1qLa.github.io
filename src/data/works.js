@@ -1,6 +1,9 @@
 import nfcLight from '../assets/works/nfc_light.png'
 import calendarEpaper from '../assets/works/calendar_epaper.png'
+import { siGithub } from 'simple-icons'
 
+// リンクの icon があれば、ラベルの前にロゴを表示する。
+// 発表スライドのリンクは載せない(各 GitHub リポジトリの README にある)。
 // 本文(body)は、文字列なら段落、{ flow } なら構成図。文中の `…` はコード表記になる。
 // media.kind: 'scene' は桃太郎の3D表示、'image' は画像。media がなければ文章だけのカード。
 export const works = [
@@ -26,8 +29,7 @@ export const works = [
       'Lambdaの環境変数に置いたSlack Webhook URLは、AWS KMSで暗号化しています。',
     ],
     links: [
-      { label: 'GitHub', href: 'https://github.com/1qLa/aws_Terraform' },
-      { label: 'Slides', href: 'https://canva.link/nnh28ewd2jvgcx9' },
+      { label: 'GitHub', href: 'https://github.com/1qLa/aws_Terraform', icon: siGithub },
     ],
   },
   {
@@ -41,8 +43,7 @@ export const works = [
     ],
     links: [
       { label: 'Play', href: 'https://pingers.tenma.tech/' },
-      { label: 'GitHub', href: 'https://github.com/1qLa/networkgame' },
-      { label: 'Slides', href: 'https://canva.link/4kcet6nm0iyj8h1' },
+      { label: 'GitHub', href: 'https://github.com/1qLa/networkgame', icon: siGithub },
     ],
   },
   {
@@ -55,8 +56,7 @@ export const works = [
       '設定の変更は、本体の物理ボタンを押している間だけできます。',
     ],
     links: [
-      { label: 'GitHub', href: 'https://github.com/1qLa/nfc_light' },
-      { label: 'Slides', href: 'https://canva.link/zlat5jei4h3g1fg' },
+      { label: 'GitHub', href: 'https://github.com/1qLa/nfc_light', icon: siGithub },
     ],
   },
   {
@@ -68,8 +68,7 @@ export const works = [
       'Googleカレンダーの最新の予定を表示する、M5Paper用のIoT電子ペーパーカレンダーです。サーバーが予定を画像にし、端末はETagで変更の有無を確かめて、変わっていないときは再描画を省いて電力を節約します。',
     ],
     links: [
-      { label: 'GitHub', href: 'https://github.com/1qLa/calendar_epaper' },
-      { label: 'Slides', href: 'https://canva.link/rsez2alt8vggqhj' },
+      { label: 'GitHub', href: 'https://github.com/1qLa/calendar_epaper', icon: siGithub },
     ],
   },
 ]
