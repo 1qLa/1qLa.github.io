@@ -1,4 +1,4 @@
-"""ヒーローの背景(部屋のドット絵 assets/hero-bg.png)を作る。
+"""ヒーローの背景(部屋のドット絵 src/assets/hero-bg.png)を作る。
 
 標準ライブラリだけで動く。使い方: python3 tools/make_room_bg.py [出力先]
 昼の部屋を1枚出力する。壁掛け時計は 12:00 で固定。
@@ -178,5 +178,5 @@ def write_png(path, rows):
 
 
 if __name__ == '__main__':
-    base = sys.argv[1] if len(sys.argv) > 1 else 'assets/hero-bg.png'
+    base = sys.argv[1] if len(sys.argv) > 1 else 'src/assets/hero-bg.png'
     write_png(base, build())

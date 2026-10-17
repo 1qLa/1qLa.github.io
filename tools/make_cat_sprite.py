@@ -1,8 +1,8 @@
-"""ドット絵の猫のスプライトシート(assets/cat-sprite.png)を作る。
+"""ドット絵の猫のスプライトシート(src/assets/cat-sprite.png)を作る。
 
 標準ライブラリだけで動く。使い方: python3 tools/make_cat_sprite.py [出力先] [プレビュー出力先]
 シート: 48x32 のコマを横に12つ(0-3 歩き、4-7 座り、8-9 寝る、10-11 遊びで構える)。猫は右向き。
-毛糸玉は assets/yarn.png(10x10)。
+毛糸玉は src/assets/yarn.png(10x10)。
 """
 import math, struct, sys, zlib
 
@@ -251,7 +251,7 @@ def sheet(scale=1):
 
 
 if __name__ == '__main__':
-    out = sys.argv[1] if len(sys.argv) > 1 else 'assets/cat-sprite.png'
+    out = sys.argv[1] if len(sys.argv) > 1 else 'src/assets/cat-sprite.png'
     write_png(out, sheet())
     write_png(out.replace('cat-sprite', 'yarn'), yarn_rows())
     if len(sys.argv) > 2:

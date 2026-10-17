@@ -1,0 +1,47 @@
+import { lazy, Suspense } from 'react'
+import Flow from './Flow'
+import InlineText from './InlineText'
+
+// Three.js は重いので、桃太郎の枠が必要になってから別ファイルとして読み込む
+const MomotaroScene = lazy(() => import('./MomotaroScene'))
+
+function Media({ media }) {
+  if (!media) return null
+  if (media.kind === 'scene') {
+    return (
+      <Suspense fallback={<div className="media scene" role="img" aria-label={media.label} />}>
+        <MomotaroScene label={media.label} caption={media.caption} />
+      </Suspense>
+    )
+  }
+  return (
+    <div className="media">
+      <img
+        src={media.src}
+        alt={media.alt}
+        width={media.width}
+        height={media.height}
+        loading="lazy"
+        className={media.contain ? 'contain' : undefined}
+      />
+    </div>
+  )
+}
+
+export default function WorkCard({ work }) {
+  return (
+    <article className="work">
+      <Media media={work.media} />
+      <h3>{work.title}</h3>
+      <p className="stack">{work.stack}</p>
+      {work.body.map((block, i) =>
+        typeof block === 'string'
+          ? <p key={i}><InlineText text={block} /></p>
+          : <Flow key={i} label={block.flow.label} steps={block.flow.steps} />
+      )}
+      <p className="links">
+        {work.links.map((l) => <a key={l.href} href={l.href}>{l.label}</a>)}
+      </p>
+    </article>
+  )
+}
