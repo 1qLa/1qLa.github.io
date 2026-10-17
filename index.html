@@ -27,9 +27,7 @@
   .wrap { max-width: 720px; margin: 0 auto; padding: 0 16px; }
   /* ヒーロー: 全画面の背景(画像 or 動画)と中央の挨拶 */
   .hero { position: relative; min-height: 100vh; min-height: 100svh; display: grid; place-items: center; color: #1a1a1a; text-align: center; overflow: hidden; background: #d8eeff; }
-  .hero-bg { position: absolute; inset: 0; z-index: 0; background: #f6e8d0 url("assets/hero-bg-day.png?v=4") center / cover no-repeat; image-rendering: pixelated; }
-  .hero[data-mode="evening"] .hero-bg { background-color: #f7d8b8; background-image: url("assets/hero-bg-evening.png?v=4"); }
-  .hero[data-mode="night"] .hero-bg { background-color: #7f7e94; background-image: url("assets/hero-bg-night.png?v=4"); }
+  .hero-bg { position: absolute; inset: 0; z-index: 0; background: #f6e8d0 url("assets/hero-bg.png?v=5") center / cover no-repeat; image-rendering: pixelated; }
   .hero-bg video { width: 100%; height: 100%; object-fit: cover; }
   .hero::after { content: ""; position: absolute; inset: 0; z-index: 1; background: rgba(255, 255, 255, .12); }
   .hero-inner { position: relative; z-index: 2; padding: 0 16px; }
@@ -42,16 +40,7 @@
   .cat-sprite { width: 100%; height: 100%; background: url("assets/cat-sprite.png?v=4") 0 0 / calc(576px * var(--s)) calc(32px * var(--s)) no-repeat; background-position: calc(var(--f, 4) * -48px * var(--s)) 0; image-rendering: pixelated; }
   .cat.left .cat-sprite { transform: scaleX(-1); }
   .yarn { --s: 4; position: absolute; z-index: 2; left: 0; bottom: calc(9vh + 2px * var(--s)); width: calc(10px * var(--s)); height: calc(10px * var(--s)); background: url("assets/yarn.png?v=4") 0 0 / 100% 100% no-repeat; image-rendering: pixelated; pointer-events: none; will-change: transform; }
-  .clock { position: absolute; z-index: 3; top: 64px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; align-items: baseline; padding: 4px 14px; border-radius: 999px; background: rgba(255, 255, 255, .55); font-size: .85rem; white-space: nowrap; font-variant-numeric: tabular-nums; }
-  .clock[hidden] { display: none; }
-  .clock b { font-size: 1rem; letter-spacing: .04em; }
-  .hero[data-mode="night"] { color: #f4f1ff; }
-  .hero[data-mode="night"]::after { background: transparent; }
-  .hero[data-mode="night"] header strong { color: #f4f1ff; }
-  .hero[data-mode="night"] nav a { color: #cfd0ec; }
-  .hero[data-mode="night"] nav a:hover { color: #fff; }
-  .hero[data-mode="night"] .scroll-hint { color: #cfd0ec; }
-  .hero[data-mode="night"] .clock { background: rgba(20, 26, 60, .55); }
+  .wallclock { position: absolute; z-index: 1; image-rendering: pixelated; pointer-events: none; }
   header { position: absolute; top: 0; left: 0; right: 0; z-index: 3; }
   header .wrap { max-width: 960px; display: flex; justify-content: space-between; align-items: center; padding-top: 16px; padding-bottom: 16px; }
   header strong { font-size: 1rem; color: #1a1a1a; }
@@ -82,7 +71,7 @@
   .work code { font-size: .9em; background: #f3f3f3; padding: 0 4px; border-radius: 4px; }
   footer { border-top: 1px solid var(--line); padding: 24px 0; color: var(--muted); font-size: .85rem; }
   @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .hero-bg video { display: none; } }
-  @media (max-width: 600px) { .hero-bg { background-size: auto 45%; background-position: 12% 100%; } .cat, .yarn { --s: 2; } .clock { top: 60px; } }
+  @media (max-width: 600px) { .hero-bg { background-size: auto 45%; background-position: 12% 100%; } .cat, .yarn { --s: 2; } }
   @media (max-width: 480px) {
       nav a { margin-left: 10px; font-size: .8rem; }
   }
@@ -91,6 +80,7 @@
 <body>
 <div class="hero">
   <div class="hero-bg" aria-hidden="true"></div>
+  <canvas class="wallclock" id="wallclock" width="34" height="34" aria-hidden="true"></canvas>
   <div class="yarn" id="yarn" aria-hidden="true"></div>
   <div class="cat" id="cat" aria-hidden="true"><div class="cat-sprite"></div></div>
   <header>
@@ -104,7 +94,6 @@
       </nav>
     </div>
   </header>
-  <div class="clock" id="clock" hidden><b id="clock-time">--:--</b><span id="clock-act"></span></div>
   <div class="hero-inner">
     <h1>はじめまして、1qLaです。</h1>
     <p class="role">Web・組み込み・クラウドの制作物をつくっています。</p>
@@ -199,48 +188,68 @@
 </footer>
 
 <script>
-// ヒーローの時計と、時間帯で変わる猫の行動(寝る / 遊ぶ / 窓を眺める / 歩き回る)と部屋の色
-// 動作確認用: ?time=23:30 のようにURLへ付けると、その時刻から始まる
+// ヒーロー: 壁掛け時計(現在時刻)と、毛糸玉で遊び続ける猫
 (function () {
   var hero = document.querySelector('.hero');
   var cat = document.getElementById('cat');
   var yarn = document.getElementById('yarn');
-  var clockEl = document.getElementById('clock');
-  var clockTime = document.getElementById('clock-time');
-  var clockAct = document.getElementById('clock-act');
+  var face = document.getElementById('wallclock');
   if (!hero || !cat || !yarn) return;
   var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // ---- 時刻
-  var offset = 0;
-  var m = /^(\d{1,2}):(\d{2})$/.exec(new URLSearchParams(location.search).get('time') || '');
-  if (m) { var t0 = new Date(); t0.setHours(+m[1], +m[2], 0, 0); offset = t0 - new Date(); }
-  var clock = function () { return new Date(Date.now() + offset); };
-  var modeOf = function (h) { return (h >= 6.5 && h < 17) ? 'day' : ((h >= 5 && h < 6.5) || (h >= 17 && h < 19.5)) ? 'evening' : 'night'; };
-  var actOf = function (h) {
-    if (h >= 22 || h < 6) return 'sleep';
-    if (h >= 9 && h < 12) return 'play';
-    if (h >= 14 && h < 17) return 'window';
-    if (h >= 17 && h < 19) return 'play';
-    return 'wander';
-  };
-  var LABEL = { sleep: 'ねむっている', play: '毛糸玉で遊んでいる', window: '窓を眺めている', wander: '歩き回っている' };
-
-  // ---- 背景絵(320x180)の座標を、画面の座標に直す(CSS の表示のしかたと合わせる)
+  // 背景絵(320x180)の座標を、画面の座標に直す(CSS の表示のしかたと合わせる)
   var geom = function () {
     var W = hero.clientWidth, H = hero.clientHeight, sc, ox, oy;
     if (matchMedia('(max-width: 600px)').matches) { sc = H * 0.45 / 180; ox = (W - 320 * sc) * 0.12; oy = H - 180 * sc; }
     else { sc = Math.max(W / 320, H / 180); ox = (W - 320 * sc) / 2; oy = (H - 180 * sc) / 2; }
     return { W: W, H: H, sc: sc, X: function (lx) { return ox + lx * sc; }, Y: function (ly) { return oy + ly * sc; } };
   };
+
+  // ---- 壁掛け時計の針(背景の文字盤の上に、同じドットの大きさで描く)
+  var CLOCK = { x: 165, y: 45, r: 14 };
+  var ctx = face && face.getContext('2d');
+  var line = function (x0, y0, x1, y1, col) {            // ドットの線
+    ctx.fillStyle = col;
+    var dx = Math.abs(x1 - x0), dy = -Math.abs(y1 - y0), sx = x0 < x1 ? 1 : -1, sy = y0 < y1 ? 1 : -1, err = dx + dy;
+    for (;;) {
+      ctx.fillRect(x0, y0, 1, 1);
+      if (x0 === x1 && y0 === y1) break;
+      var e2 = 2 * err;
+      if (e2 >= dy) { err += dy; x0 += sx; }
+      if (e2 <= dx) { err += dx; y0 += sy; }
+    }
+  };
+  var drawClock = function () {
+    if (!ctx) return;
+    var d = new Date(), c = 17;                           // canvas は 34x34 ドット、中心 (17,17)
+    var sec = d.getSeconds(), min = d.getMinutes() + sec / 60, hr = (d.getHours() % 12) + min / 60;
+    ctx.clearRect(0, 0, 34, 34);
+    var hand = function (frac, len, col) {
+      var a = frac * Math.PI * 2;
+      line(c, c, Math.round(c + Math.sin(a) * len), Math.round(c - Math.cos(a) * len), col);
+    };
+    hand(hr / 12, 6, '#2b1e1c');
+    hand(min / 60, 9, '#2b1e1c');
+    hand(sec / 60, 10, '#e05252');
+    ctx.fillStyle = '#2b1e1c'; ctx.fillRect(c - 1, c - 1, 2, 2);
+  };
+  var placeClock = function () {
+    if (!face) return;
+    var g = geom(), size = 34 * g.sc;
+    face.style.width = size + 'px'; face.style.height = size + 'px';
+    face.style.left = (g.X(CLOCK.x) - size / 2) + 'px';
+    face.style.top = (g.Y(CLOCK.y) - size / 2) + 'px';
+  };
+  placeClock(); drawClock(); setInterval(drawClock, 1000);
+  addEventListener('resize', placeClock);
+
+  // ---- 猫(x は猫の左端。フレーム: 0-3 歩き / 4-7 座り / 10-11 構える)
+  var SIT_TAIL = [0, 1, 0, 3];
+  var x = 0, dir = 1, S = 'chase', tS = 0, visible = true;
+  var bx = 0, bv = 0;                                // 毛糸玉の中心 x と速度
   var scale = function () { return parseFloat(getComputedStyle(cat).getPropertyValue('--s')); };
   var catW = function () { return cat.offsetWidth; };
   var maxX = function () { return Math.max(0, hero.clientWidth - catW()); };
-
-  // ---- 猫(x は猫の左端。フレーム: 0-3 歩き / 4-7 座り / 8-9 寝る / 10-11 構える)
-  var SIT_TAIL = [0, 1, 0, 3];
-  var x = 0, dir = 1, act = null, S = 'sit', dest = 0, after = 'sit', until = 0, tS = 0, onBed = false, visible = true;
-  var bx = 0, bv = 0, ballRest = true;          // 毛糸玉(中心の x と速度)
   var setFrame = function (f) { cat.style.setProperty('--f', f); };
   var place = function () {
     cat.style.transform = 'translateX(' + Math.round(x) + 'px)';
@@ -248,89 +257,27 @@
     var w = yarn.offsetWidth;
     yarn.style.transform = 'translateX(' + Math.round(bx - w / 2) + 'px) rotate(' + Math.round(bx / (w / 2) * 57.3) + 'deg)';
   };
-  var floor = function () { cat.style.bottom = ''; onBed = false; };
-  var goTo = function (d, a) { dest = Math.max(0, Math.min(maxX(), d)); dir = dest > x ? 1 : -1; after = a; S = 'walk'; tS = 0; floor(); };
-  var wanderTarget = function () {
-    var mx = maxX(), t;
-    do { t = mx * (0.05 + Math.random() * 0.9); } while (Math.abs(t - x) < mx * 0.25 && mx > 0);
-    return t;
-  };
 
-  var start = function (a, now) {
-    act = a;
-    var g = geom(), w = catW();
-    if (a === 'sleep') goTo(g.X(285) - w / 2, 'sleep');
-    else if (a === 'window') goTo(g.X(262) - w / 2, 'gaze');
-    else if (a === 'play') { ballRest = false; S = 'chase'; tS = 0; floor(); }
-    else { goTo(wanderTarget(), 'sit'); }
-    if (a !== 'play') { dir = dir || 1; }
-  };
-
-  var restBall = function () { bx = geom().X(200); bv = 0; };
-
-  // ---- 時計の表示(1秒ごと)
-  var lastMin = -1;
-  var tickClock = function (now) {
-    var d = clock(), h = d.getHours() + d.getMinutes() / 60;
-    hero.dataset.mode = modeOf(h);
-    if (d.getMinutes() !== lastMin) {
-      lastMin = d.getMinutes();
-      clockTime.textContent = ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
-    }
-    var a = actOf(h);
-    clockAct.textContent = '· ' + LABEL[a];
-    clockEl.hidden = false;
-    if (a !== act) start(a, now);
-  };
-
-  // ---- 動かさない場合(視差効果を減らす設定): 時間帯の姿勢で止める
-  var still = function () {
-    tickClock(0);
-    var g = geom(), w = catW(), a = act;
-    restBall();
-    if (a === 'sleep') { x = g.X(285) - w / 2; setFrame(8); cat.style.bottom = (g.H - (g.Y(137) + 2 * scale())) + 'px'; }
-    else if (a === 'window') { x = g.X(262) - w / 2; setFrame(4); }
-    else { x = maxX() * 0.75; setFrame(4); }
-    place();
-  };
-
-  restBall(); x = maxX() * 0.75; place(); setFrame(4);
-  if (reduce) { still(); setInterval(still, 30000); addEventListener('resize', still); return; }
+  bx = geom().X(200); x = maxX() * 0.75; place(); setFrame(4);
+  if (reduce) return;                                // 視差効果を減らす設定: 座ったまま動かさない
   new IntersectionObserver(function (e) { visible = e[0].isIntersecting; }).observe(hero);
 
-  var last = performance.now(), lastClock = 0;
+  var last = performance.now();
   function tick(now) {
     requestAnimationFrame(tick);
     var dt = Math.min((now - last) / 1000, 0.1); last = now;
-    if (now - lastClock > 1000) { lastClock = now; tickClock(now); }
     if (!visible) return;
     var s = scale(), g = geom(), w = catW(), speed = 14 * s;
 
-    // 毛糸玉を転がす
+    // 毛糸玉を転がす(だんだん減速し、壁で跳ね返る)
     if (Math.abs(bv) > 4) {
       bx += bv * dt; bv *= Math.max(0, 1 - 1.5 * dt);
       var lo = yarn.offsetWidth, hi = g.W - yarn.offsetWidth;
       if (bx < lo) { bx = lo; bv = -bv * 0.6; } if (bx > hi) { bx = hi; bv = -bv * 0.6; }
     } else bv = 0;
 
-    if (S === 'walk') {
-      tS += dt; setFrame(Math.floor(tS / 0.16) % 4);
-      x += dir * speed * dt;
-      if ((dir > 0 && x >= dest) || (dir < 0 && x <= dest)) {
-        x = dest; tS = 0;
-        if (after === 'sleep') { S = 'sleep'; dir = 1; onBed = true; }
-        else if (after === 'gaze') { S = 'gaze'; dir = 1; }
-        else { S = 'sit'; until = now + 3500 + Math.random() * 3500; }
-      }
-    } else if (S === 'sit' || S === 'gaze') {
-      var t = now % 1600;
-      setFrame(4 + ((now % 4200) < 180 ? 2 : SIT_TAIL[Math.floor(t / 400)]));
-      if (S === 'sit' && now >= until) goTo(wanderTarget(), 'sit');
-    } else if (S === 'sleep') {
-      setFrame(8 + (Math.floor(now / 1400) % 2));
-      cat.style.bottom = (g.H - (g.Y(137) + 2 * s)) + 'px';
-    } else if (S === 'chase') {           // 毛糸玉を追う → 構える → 前足で転がす
-      var cx = x + w / 2, gap = bx - cx;
+    if (S === 'chase') {                             // 毛糸玉を追う → 構える → 前足で転がす
+      var gap = bx - (x + w / 2);
       if (Math.abs(gap) > w * 0.55) {
         dir = gap > 0 ? 1 : -1; tS += dt; setFrame(Math.floor(tS / 0.11) % 4); x += dir * speed * 1.7 * dt;
       } else { S = 'crouch'; tS = 0; dir = gap >= 0 ? 1 : -1; }
@@ -345,7 +292,6 @@
     x = Math.max(0, Math.min(maxX(), x));
     place();
   }
-  tickClock(0);
   requestAnimationFrame(tick);
   addEventListener('resize', function () { x = Math.min(x, maxX()); place(); });
 })();

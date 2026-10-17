@@ -1,7 +1,7 @@
 """ヒーローの背景(部屋のドット絵 assets/hero-bg.png)を作る。
 
 標準ライブラリだけで動く。使い方: python3 tools/make_room_bg.py [出力先]
-昼・夕方・夜の3枚(hero-bg-day.png など)を出力する。
+昼の部屋を1枚出力する。壁掛け時計の針は、ページ側(canvas)で描く。
 320x180 の絵を、CSS 側で拡大して表示する(image-rendering: pixelated)。
 左にキャットタワー、中央は挨拶文のために空け、右に窓・爪研ぎ・ペットベッドを置く。
 床には段ボールの爪研ぎ。毛糸玉はページ側で動かす。
@@ -60,45 +60,35 @@ def post(x0, y0, x1, y1):
         rect(x0 + 1, y, x1 - 1, y, 'sisal2')
 
 
-MODE = 'day'
-TINT = {'day': None, 'evening': ((255, 160, 100), 0.22), 'night': ((30, 40, 100), 0.55)}
-
-
-def tint_all():
-    t = TINT[MODE]
-    if not t:
-        return
-    (tr, tg, tb), a = t
-    for y in range(H):
-        for x in range(W):
-            r, g, b = px[y][x][:3]
-            px[y][x] = (int(r + (tr - r) * a), int(g + (tg - g) * a), int(b + (tb - b) * a))
+CLOCK = (165, 45, 14)   # 壁掛け時計の中心 x, y と半径(針はページ側で描く)
 
 
 def glass():
-    """窓の外。時間帯ごとに空の色と飾りが変わる。"""
-    sky = {'day': ((150, 208, 255), (214, 238, 255)),
-           'evening': ((126, 134, 206), (255, 178, 128)),
-           'night': ((14, 20, 56), (44, 60, 116))}[MODE]
+    """窓の外(昼)。"""
     for y in range(23, 80):
         t = (y - 23) / 57
-        col = tuple(int(sky[0][i] * (1 - t) + sky[1][i] * t) for i in range(3))
+        col = tuple(int(C['sky1'][i] * (1 - t) + C['sky2'][i] * t) for i in range(3))
         rect(239, y, 289, y, col)
-    cloud = {'day': (255, 255, 255), 'evening': (255, 218, 204), 'night': None}[MODE]
-    if cloud:
-        ellipse(250, 38, 7, 3, cloud); ellipse(256, 36, 5, 3, cloud); ellipse(280, 66, 7, 3, cloud)
-    if MODE == 'night':
-        for sx, sy in ((246, 30), (255, 44), (270, 28), (282, 58), (249, 66), (286, 36), (258, 72), (274, 50)):
-            put(sx, sy, (255, 252, 230))
-        ellipse(276, 38, 6, 6, (252, 244, 200)); ellipse(279, 36, 5, 5, (24, 34, 80))
-    if MODE == 'evening':
-        ellipse(264, 80, 16, 8, (255, 214, 150))
+    ellipse(250, 38, 7, 3, 'cloud'); ellipse(256, 36, 5, 3, 'cloud'); ellipse(280, 66, 7, 3, 'cloud')
     rect(263, 21, 265, 81, 'frame'); rect(237, 49, 291, 51, 'frame')   # 窓の桟
 
 
-def build(mode):
-    global px, MODE
-    MODE = mode
+def clock_face():
+    """丸い壁掛け時計の文字盤(12個の目盛り)。針は動くので、ページ側の canvas で描く。"""
+    cx, cy, r = CLOCK
+    ellipse(cx, cy, r + 1.5, r + 1.5, 'ol')
+    ellipse(cx, cy, r, r, 'frame2')
+    ellipse(cx, cy, r - 1.5, r - 1.5, 'frame')
+    for k in range(12):
+        ang = math.radians(k * 30)
+        long_tick = k % 3 == 0
+        r0 = r - (5 if long_tick else 4)
+        for rr in range(int(r0), int(r - 2)):
+            put(int(round(cx + math.sin(ang) * rr)), int(round(cy - math.cos(ang) * rr)), 'ol')
+
+
+def build():
+    global px
     px = [[C['wall']] * W for _ in range(H)]
     # ---- 壁と床
     for y in range(H):
@@ -115,8 +105,8 @@ def build(mode):
     for row, y0 in enumerate(range(FLOOR, H, 14)):    # 床板のつなぎ目
         for x in range((row * 37) % 53, W, 53):
             rect(x, y0, x, min(H - 1, y0 + 13), 'plank')
-    # 窓から差す光(夜はなし)
-    for y in range(FLOOR + 3, FLOOR + 36 if MODE != 'night' else FLOOR + 3):
+    # 窓から差す光
+    for y in range(FLOOR + 3, FLOOR + 36):
         for x in range(168 + (y - FLOOR) * 2, 250 + (y - FLOOR) * 2):
             if 0 <= x < W:
                 put(x, y, 'sun')
@@ -167,8 +157,8 @@ def build(mode):
     for x in range(258, 304, 5):
         put(x, 136, 'bed2')
 
-    tint_all()
     glass()
+    clock_face()
     return px
 
 
@@ -185,5 +175,4 @@ def write_png(path, rows):
 
 if __name__ == '__main__':
     base = sys.argv[1] if len(sys.argv) > 1 else 'assets/hero-bg.png'
-    for m in ('day', 'evening', 'night'):
-        write_png(base.replace('.png', '-%s.png' % m), build(m))
+    write_png(base, build())
