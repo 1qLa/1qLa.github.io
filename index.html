@@ -43,6 +43,7 @@
   .cat.left .cat-sprite { transform: scaleX(-1); }
   .yarn { --s: 4; position: absolute; z-index: 2; left: 0; bottom: calc(9vh + 2px * var(--s)); width: calc(10px * var(--s)); height: calc(10px * var(--s)); background: url("assets/yarn.png?v=4") 0 0 / 100% 100% no-repeat; image-rendering: pixelated; pointer-events: none; will-change: transform; }
   .clock { position: absolute; z-index: 3; top: 64px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; align-items: baseline; padding: 4px 14px; border-radius: 999px; background: rgba(255, 255, 255, .55); font-size: .85rem; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .clock[hidden] { display: none; }
   .clock b { font-size: 1rem; letter-spacing: .04em; }
   .hero[data-mode="night"] { color: #f4f1ff; }
   .hero[data-mode="night"]::after { background: transparent; }
@@ -74,6 +75,11 @@
   .scene { background: linear-gradient(to bottom, #9fd3ff 0%, #d8eeff 62%, #a8dcae 62%, #82c78f 100%); }
   .scene canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
   .scene .caption { position: absolute; left: 12px; bottom: 8px; margin: 0; font-size: .75rem; color: #2f5d3a; }
+  .flow { list-style: none; display: flex; flex-wrap: wrap; gap: 8px 22px; padding: 0; margin: 0 0 1em; counter-reset: step; }
+  .flow li { position: relative; display: flex; flex-direction: column; padding: 6px 12px; border: 1px solid var(--line); border-radius: 8px; background: #fafafa; font-size: .85rem; line-height: 1.4; }
+  .flow li:not(:last-child)::after { content: "→"; position: absolute; right: -19px; top: 50%; transform: translateY(-50%); color: var(--muted); }
+  .flow small { color: var(--muted); font-size: .72rem; }
+  .work code { font-size: .9em; background: #f3f3f3; padding: 0 4px; border-radius: 4px; }
   footer { border-top: 1px solid var(--line); padding: 24px 0; color: var(--muted); font-size: .85rem; }
   @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .hero-bg video { display: none; } }
   @media (max-width: 600px) { .hero-bg { background-size: auto 45%; background-position: 12% 100%; } .cat, .yarn { --s: 2; } .clock { top: 60px; } }
@@ -98,11 +104,10 @@
       </nav>
     </div>
   </header>
-  <div class="clock" id="clock"><b id="clock-time">--:--</b><span id="clock-act"></span></div>
+  <div class="clock" id="clock" hidden><b id="clock-time">--:--</b><span id="clock-act"></span></div>
   <div class="hero-inner">
     <h1>Hi, I'm 1qLa.</h1>
     <p class="role">Web, embedded and cloud projects</p>
-    <p class="lead">Here are a few things I've built. Take your time looking around.</p>
   </div>
   <a class="scroll-hint" href="#about">Scroll ↓</a>
 </div>
@@ -111,7 +116,6 @@
   <section id="about">
     <h2>About</h2>
     <p>I like building things that connect software with the real world: a 3D learning game for the browser, a smart light unlocked by an NFC tag, an e-paper calendar, and AWS monitoring written in Terraform.</p>
-    <p>On this page you can find four of my projects. Each one links to its GitHub repository and presentation slides.</p>
   </section>
 
   <section id="skills">
@@ -132,6 +136,22 @@
 
   <section id="works">
     <h2>Works</h2>
+
+    <article class="work">
+      <h3>AWS Drift Detection and Slack Alerts</h3>
+      <p class="stack">Terraform / AWS (CloudTrail, EventBridge, SNS, SQS, Lambda, KMS) / Python</p>
+      <p>Terraform cannot see a change made by hand in the AWS console (for example, opening a security group) until the next <code>terraform plan</code>. This system detects such manual changes as soon as they happen and notifies Slack, so unmanaged changes are found early.</p>
+      <ol class="flow" aria-label="Architecture: CloudTrail to EventBridge to SNS to SQS to Lambda to Slack">
+        <li><b>CloudTrail</b><small>records the API call</small></li>
+        <li><b>EventBridge</b><small>filters the change</small></li>
+        <li><b>SNS</b><small>routes the alert</small></li>
+        <li><b>SQS</b><small>buffers and retries</small></li>
+        <li><b>Lambda</b><small>formats the message</small></li>
+        <li><b>Slack</b><small>alerts the team</small></li>
+      </ol>
+      <p>The Slack webhook URL kept in the Lambda environment variable is encrypted with AWS KMS.</p>
+      <p class="links"><a href="https://github.com/1qLa/aws_Terraform">GitHub</a><a href="https://canva.link/nnh28ewd2jvgcx9">Slides</a></p>
+    </article>
 
     <article class="work">
       <div class="media scene" id="momo-scene" role="img" aria-label="Momotaro, the game's hero, walking across a field">
@@ -160,12 +180,6 @@
       <p class="links"><a href="https://github.com/1qLa/calendar_epaper">GitHub</a><a href="https://canva.link/rsez2alt8vggqhj">Slides</a></p>
     </article>
 
-    <article class="work">
-      <h3>AWS Drift Detection and Slack Alerts</h3>
-      <p class="stack">Terraform / AWS (CloudTrail, EventBridge, SNS, SQS, Lambda, KMS) / Python</p>
-      <p>An event-driven system that detects manual changes to AWS resources managed with Terraform (configuration drift) and notifies Slack right away. It has no screen: CloudTrail events flow through EventBridge, SNS and SQS to a Lambda function that posts the alert.</p>
-      <p class="links"><a href="https://github.com/1qLa/aws_Terraform">GitHub</a><a href="https://canva.link/nnh28ewd2jvgcx9">Slides</a></p>
-    </article>
   </section>
 
   <section id="contact">
@@ -189,6 +203,7 @@
   var hero = document.querySelector('.hero');
   var cat = document.getElementById('cat');
   var yarn = document.getElementById('yarn');
+  var clockEl = document.getElementById('clock');
   var clockTime = document.getElementById('clock-time');
   var clockAct = document.getElementById('clock-act');
   if (!hero || !cat || !yarn) return;
@@ -262,6 +277,7 @@
     }
     var a = actOf(h);
     clockAct.textContent = '· ' + LABEL[a];
+    clockEl.hidden = false;
     if (a !== act) start(a, now);
   };
 
