@@ -3,6 +3,8 @@ import calendarEpaper from '../assets/works/calendar_epaper.png'
 import { siGithub } from 'simple-icons'
 import { genericPlay } from './icons'
 
+// role(開発期間・担当・状況)は、各 GitHub リポジトリの README に書かれている内容をそのまま使う。
+// README に書かれていない作品は、role を付けない(推測で書かない)。
 // リンクの icon があれば、ラベルの前にロゴを表示する。
 // 発表スライドのリンクは載せない(各 GitHub リポジトリの README にある)。
 // 本文(body)は、文字列なら段落、{ flow } なら構成図。文中の `…` はコード表記になる。
@@ -37,6 +39,10 @@ export const works = [
     id: 'packets-of-long-ago',
     title: 'Packets of Long Ago (昔々のパケットたち)',
     stack: 'Vue.js 3 / Three.js / Blender',
+    role: {
+      period: '約4〜5ヶ月',
+      scope: '企画発案、フロントエンド(3D描画・UIロジック全般)の実装',
+    },
     media: { kind: 'scene', label: 'ゲームの主人公の桃太郎が、野原を歩いている', caption: 'ゲームの3Dモデルが、ブラウザ上で動いています' },
     body: [
       '桃太郎の昔話を通して、ネットワークの基礎(IPアドレス、ルータ、スイッチ)を学べる3Dの学習ゲームです。企画を考え、フロントエンド(3D描画、衝突判定、UIロジック)を実装しました。',
@@ -51,9 +57,14 @@ export const works = [
     id: 'lightouch',
     title: 'LighTouch',
     stack: 'Kotlin (Android) / ESP32-C3 / PN532 / BLE',
+    role: {
+      period: '約4〜5ヶ月',
+      scope: 'マイコンへの書き込み(NFC認証・BLE通信・ライト制御)',
+      status: '開発中(動作検証と、アプリとの連携を進行中)',
+    },
     media: { kind: 'image', src: nfcLight, alt: 'LighTouchのタイトルスライド', width: 1440, height: 810 },
     body: [
-      '鍵のように使えるスマートライトで、登録したNFCタグをかざしたときだけ点灯します。AndroidアプリからBLEで接続して、設定と鍵の管理を行います。',
+      '鍵のように使えるスマートライトを開発しています。登録したNFCタグをかざしたときだけ点灯する仕組みで、AndroidアプリからBLEで接続して、設定と鍵の管理を行います。',
       '設定の変更は、本体の物理ボタンを押している間だけできます。',
     ],
     links: [

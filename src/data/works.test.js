@@ -22,6 +22,15 @@ describe('works', () => {
     }
   })
 
+  it('role を付ける場合は、開発期間と担当が両方ある', () => {
+    for (const w of works) {
+      if (w.role) {
+        expect(w.role.period).toBeTruthy()
+        expect(w.role.scope).toBeTruthy()
+      }
+    }
+  })
+
   it('アイコンのあるリンクは、図形データを持つ', () => {
     for (const w of works) {
       for (const l of w.links) {

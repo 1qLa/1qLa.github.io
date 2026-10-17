@@ -51,9 +51,11 @@
 - 戻し方: Pages の Source を「Deploy from a branch」に戻し、main を git revert する(旧静的版は履歴に残っている)。
 - 作品の GitHub / Play リンクと、Contact のリンク(GitHub・メール)を、Skills と同じ角丸のチップにした(アイコン付き。マウスを乗せると枠が青くなって少し浮く。リンクとして押せる)。Gmail のアイコンも付けた。移行のときに落ちていた「視差効果を減らす」設定のルールを戻した。
 - 2026-10-17: Skills から、Kotlin、FastAPI、Nginx、Blender を削除した(本人の指示。自分で書いていない技術を載せない方針)。残りは Python / JavaScript / C++ (Arduino) / HCL (Terraform)、Vue.js 3 / Three.js / PlatformIO、AWS / Terraform / Docker / Git / GitHub。作品カードの「使用技術」の行には、まだこの4つが残っている(下の「次にやること」参照)。
+- 2026-10-17: 作品カードに「開発期間」「担当」(LighTouch は「状況」も)を追加した。内容は各 GitHub の README に書かれているものをそのまま使った(networkgame: 約4〜5ヶ月 / 企画発案、フロントエンド(3D描画・UIロジック全般)の実装。nfc_light: 約4〜5ヶ月 / マイコンへの書き込み(NFC認証・BLE通信・ライト制御))。calendar_epaper と aws_Terraform の README には担当・体制の記載がないので、何も書いていない。
+- LighTouch の README の「開発状況」が、検証・実装は進行中、仕上げは未着手のため、サイトの説明を「開発しています」に直し、状況に「開発中」と書いた(完成品に見えないようにするため)。
 
 ## 次にやること(面接前の優先順。事実は本人から聞く)
-1. 各作品の担当範囲(人数・期間・自分の担当)を書く。
+1. 各作品の担当範囲を書く(networkgame と nfc_light は済み。calendar_epaper と aws_Terraform は、README に書いてから、サイトに反映する。人数は、どの README にも無い)。
 2. Skills を、使用経験の度合い(メイン / 触った程度)で整理する(自分で書いていない技術の削除は済み)。作品カードの「使用技術」の行(Blender、Kotlin、FastAPI、Nginx)をどうするか決める。
 3. About の自己紹介を、本人の言葉に直す(今はデモ)。卒業月と志望職種を入れるか決める。
 4. MCP認可検証を「制作中」として載せる(内容を聞く)。
