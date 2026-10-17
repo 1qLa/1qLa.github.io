@@ -41,8 +41,11 @@ section { padding: 40px 0; border-top: 1px solid var(--line); }
 h2 { font-size: 1.2rem; margin: 0 0 20px; }
 p { margin: 0 0 1em; }
 .tags { display: flex; flex-wrap: wrap; gap: 8px; padding: 0; margin: 0; list-style: none; }
-.tags li { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); border-radius: 999px; padding: 3px 12px 3px 10px; font-size: .85rem; background: #fff; }
-.tags li a { display: inline-flex; align-items: center; gap: 6px; }
+.tags li, .chip { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); border-radius: 999px; padding: 3px 12px 3px 10px; font-size: .85rem; background: #fff; color: var(--fg); text-decoration: none; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; }
+a.chip { transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease; }
+a.chip:hover { border-color: var(--accent); box-shadow: 0 3px 10px rgba(36, 87, 214, .16); transform: translateY(-1px); }
+a.chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .icon { flex: none; display: block; }
 .skill-group { margin-bottom: 20px; }
 .skill-group h3 { font-size: .9rem; color: var(--muted); margin: 0 0 8px; font-weight: 600; }
@@ -52,8 +55,6 @@ p { margin: 0 0 1em; }
 .work h3 { margin: 16px 0 4px; font-size: 1.05rem; }
 .work h3:first-child { margin-top: 0; }
 .work .stack { color: var(--muted); font-size: .85rem; margin: 0 0 8px; }
-.work .links { margin: 0; font-size: .9rem; }
-.work .links a { display: inline-flex; align-items: center; gap: 6px; margin-right: 16px; }
 .media { position: relative; aspect-ratio: 16 / 9; border-radius: 10px; overflow: hidden; border: 1px solid var(--line); background: #eef3fb; }
 .media img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .scene { background: linear-gradient(to bottom, #9fd3ff 0%, #d8eeff 62%, #a8dcae 62%, #82c78f 100%); }
@@ -66,6 +67,11 @@ p { margin: 0 0 1em; }
 .media img.contain { object-fit: contain; background: #fff; }
 .work code { font-size: .9em; background: #f6efe1; padding: 0 4px; border-radius: 4px; }
 footer { border-top: 1px solid var(--line); padding: 24px 0; color: var(--muted); font-size: .85rem; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  a.chip, .work { transition: none; }
+  a.chip:hover, .work:hover { transform: none; }
+}
 @media (max-width: 600px) { .hero-bg { background-size: auto 45%; background-position: 12% 100%; } .cat, .yarn { --s: 2; } }
 @media (max-width: 480px) {
   .work { padding: 14px; }

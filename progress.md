@@ -49,6 +49,7 @@
 - 2026-10-17: React 版を公開に切り替えた。GitHub の Pages の Source を「GitHub Actions」に変更(本人が操作)後、react-migration を main に取り込んで push(早送り、衝突なし)。Actions の「Deploy to GitHub Pages」が build・deploy とも成功し、https://1qLa.github.io/ が React 版になった(トップのPC幅・スマホ幅の表示、JS/CSS、3Dと画像のファイルの取得を確認)。以降は、main への push で、lint・テスト・ビルドを通ったものだけが自動で公開される。
 - Dependabot が、依存パッケージと Actions の更新のプルリクエストを作り始めた(週に1回)。内容を確認して、CI が通れば取り込む。
 - 戻し方: Pages の Source を「Deploy from a branch」に戻し、main を git revert する(旧静的版は履歴に残っている)。
+- 作品の GitHub / Play リンクと、Contact のリンク(GitHub・メール)を、Skills と同じ角丸のチップにした(アイコン付き。マウスを乗せると枠が青くなって少し浮く。リンクとして押せる)。Gmail のアイコンも付けた。移行のときに落ちていた「視差効果を減らす」設定のルールを戻した。
 
 ## 次にやること(面接前の優先順。事実は本人から聞く)
 1. 各作品の担当範囲(人数・期間・自分の担当)を書く。

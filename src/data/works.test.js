@@ -22,6 +22,14 @@ describe('works', () => {
     }
   })
 
+  it('アイコンのあるリンクは、図形データを持つ', () => {
+    for (const w of works) {
+      for (const l of w.links) {
+        if (l.icon) expect(l.icon.path).toMatch(/^M/)
+      }
+    }
+  })
+
   it('発表スライドのリンクは載せない(READMEにある)', () => {
     for (const w of works) {
       for (const l of w.links) expect(l.href).not.toContain('canva')

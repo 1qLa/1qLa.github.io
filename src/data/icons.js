@@ -5,3 +5,10 @@ export const genericCloud = {
   hex: '64748B',
   path: 'M6.5 19a4.5 4.5 0 0 1-.6-8.96A6 6 0 0 1 17.4 9.1 4.9 4.9 0 0 1 17.5 19h-11Z',
 }
+
+// 「Play」リンク用の、再生ボタンの三角(一般的な図形)
+export const genericPlay = {
+  title: 'Play',
+  hex: '2457D6',
+  path: 'M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5Z',
+}

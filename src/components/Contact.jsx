@@ -1,4 +1,4 @@
-import { siGithub } from 'simple-icons'
+import { siGithub, siGmail } from 'simple-icons'
 import Icon from './Icon'
 
 export default function Contact() {
@@ -6,15 +6,16 @@ export default function Contact() {
     <section id="contact">
       <h2>Contact</h2>
       <p>ご相談やご質問は、メールかGitHubからお気軽にご連絡ください。</p>
-      <ul className="tags">
-        <li>
-          <a href="https://github.com/1qLa">
-            <Icon icon={siGithub} color="currentColor" />
-            GitHub
-          </a>
-        </li>
-        <li><a href="mailto:kane170617@gmail.com">kane170617@gmail.com</a></li>
-      </ul>
+      <div className="chips">
+        <a className="chip" href="https://github.com/1qLa">
+          <Icon icon={siGithub} />
+          GitHub
+        </a>
+        <a className="chip" href="mailto:kane170617@gmail.com">
+          <Icon icon={siGmail} />
+          kane170617@gmail.com
+        </a>
+      </div>
     </section>
   )
 }

@@ -40,14 +40,14 @@ export default function WorkCard({ work }) {
           ? <p key={i}><InlineText text={block} /></p>
           : <Flow key={i} label={block.flow.label} steps={block.flow.steps} />
       )}
-      <p className="links">
+      <div className="chips">
         {work.links.map((l) => (
-          <a key={l.href} href={l.href}>
-            {l.icon && <Icon icon={l.icon} color="currentColor" />}
+          <a key={l.href} className="chip" href={l.href}>
+            {l.icon && <Icon icon={l.icon} />}
             {l.label}
           </a>
         ))}
-      </p>
+      </div>
     </article>
   )
 }

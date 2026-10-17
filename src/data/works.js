@@ -1,6 +1,7 @@
 import nfcLight from '../assets/works/nfc_light.png'
 import calendarEpaper from '../assets/works/calendar_epaper.png'
 import { siGithub } from 'simple-icons'
+import { genericPlay } from './icons'
 
 // リンクの icon があれば、ラベルの前にロゴを表示する。
 // 発表スライドのリンクは載せない(各 GitHub リポジトリの README にある)。
@@ -42,7 +43,7 @@ export const works = [
       '学内展示でコンセプト賞を受賞し、CEATEC 2026 でも展示しました。',
     ],
     links: [
-      { label: 'Play', href: 'https://pingers.tenma.tech/' },
+      { label: 'Play', href: 'https://pingers.tenma.tech/', icon: genericPlay },
       { label: 'GitHub', href: 'https://github.com/1qLa/networkgame', icon: siGithub },
     ],
   },
