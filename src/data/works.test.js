@@ -22,12 +22,16 @@ describe('works', () => {
     }
   })
 
-  it('role を付ける場合は、開発期間と担当が両方ある', () => {
+  it('role は、項目名と内容の組で、空の項目がない', () => {
     for (const w of works) {
-      if (w.role) {
-        expect(w.role.period).toBeTruthy()
-        expect(w.role.scope).toBeTruthy()
+      if (!w.role) continue
+      expect(w.role.length).toBeGreaterThan(0)
+      for (const [label, value] of w.role) {
+        expect(label).toBeTruthy()
+        expect(value).toBeTruthy()
       }
+      const labels = w.role.map(([l]) => l)
+      expect(new Set(labels).size).toBe(labels.length)
     }
   })
 

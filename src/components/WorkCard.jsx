@@ -37,9 +37,9 @@ export default function WorkCard({ work }) {
       <p className="stack">{work.stack}</p>
       {work.role && (
         <dl className="role">
-          <div><dt>開発期間</dt><dd>{work.role.period}</dd></div>
-          <div><dt>担当</dt><dd>{work.role.scope}</dd></div>
-          {work.role.status && <div><dt>状況</dt><dd>{work.role.status}</dd></div>}
+          {work.role.map(([label, value]) => (
+            <div key={label}><dt>{label}</dt><dd>{value}</dd></div>
+          ))}
         </dl>
       )}
       {work.body.map((block, i) =>
