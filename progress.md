@@ -46,6 +46,9 @@
 - 作品を、白いカード(縁・角丸・薄い影)で囲んだ。ページ全体の背景は、真っ白から部屋に近い温かいクリーム色(#fbf5ea)に変え、トップの下端(床)がその色へ溶けるようにぼかして、スクロールしたときの急な色の変化をなくした。公開中の静的版(main)と React 版の両方に反映した。
 - Skills の各項目に、言語・技術のアイコンを付けた(Simple Icons、CC0。ページに直接埋め込み、外部サービスには頼らない)。AWS のロゴは Simple Icons に無いので、雲の図形で代用(ロゴには似せていない)。「Git / GitHub」は Git と GitHub に分けた。GitHub のリンク(各作品・Contact)にも GitHub のアイコンを付けた。
 - 発表スライド(Canva)のリンクは、各 GitHub の README にあるので、サイトからは外した(Canva の /edit リンクが公開される懸念も、サイト上では解消)。公開中の静的版(main)と React 版の両方に反映。
+- 2026-10-17: React 版を公開に切り替えた。GitHub の Pages の Source を「GitHub Actions」に変更(本人が操作)後、react-migration を main に取り込んで push(早送り、衝突なし)。Actions の「Deploy to GitHub Pages」が build・deploy とも成功し、https://1qLa.github.io/ が React 版になった(トップのPC幅・スマホ幅の表示、JS/CSS、3Dと画像のファイルの取得を確認)。以降は、main への push で、lint・テスト・ビルドを通ったものだけが自動で公開される。
+- Dependabot が、依存パッケージと Actions の更新のプルリクエストを作り始めた(週に1回)。内容を確認して、CI が通れば取り込む。
+- 戻し方: Pages の Source を「Deploy from a branch」に戻し、main を git revert する(旧静的版は履歴に残っている)。
 
 ## 次にやること(面接前の優先順。事実は本人から聞く)
 1. 各作品の担当範囲(人数・期間・自分の担当)を書く。
