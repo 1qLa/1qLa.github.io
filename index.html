@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>1qLa | Portfolio</title>
-<meta name="description" content="1qLaのポートフォリオ。Web・組み込み・クラウドの制作物をまとめています。">
+<title>金島拓矢 | Portfolio</title>
+<meta name="description" content="金島拓矢のポートフォリオ。Web・組み込み・クラウドの制作物をまとめています。">
 <style>
   :root {
     --bg: #ffffff;
@@ -27,7 +27,7 @@
   .wrap { max-width: 720px; margin: 0 auto; padding: 0 16px; }
   /* ヒーロー: 全画面の背景(画像 or 動画)と中央の挨拶 */
   .hero { position: relative; min-height: 100vh; min-height: 100svh; display: grid; place-items: center; color: #1a1a1a; text-align: center; overflow: hidden; background: #d8eeff; }
-  .hero-bg { position: absolute; inset: 0; z-index: 0; background: #f6e8d0 url("assets/hero-bg.png?v=5") center / cover no-repeat; image-rendering: pixelated; }
+  .hero-bg { position: absolute; inset: 0; z-index: 0; background: #f6e8d0 url("assets/hero-bg.png?v=6") center / cover no-repeat; image-rendering: pixelated; }
   .hero-bg video { width: 100%; height: 100%; object-fit: cover; }
   .hero::after { content: ""; position: absolute; inset: 0; z-index: 1; background: rgba(255, 255, 255, .12); }
   .hero-inner { position: relative; z-index: 2; padding: 0 16px; }
@@ -40,7 +40,6 @@
   .cat-sprite { width: 100%; height: 100%; background: url("assets/cat-sprite.png?v=4") 0 0 / calc(576px * var(--s)) calc(32px * var(--s)) no-repeat; background-position: calc(var(--f, 4) * -48px * var(--s)) 0; image-rendering: pixelated; }
   .cat.left .cat-sprite { transform: scaleX(-1); }
   .yarn { --s: 4; position: absolute; z-index: 2; left: 0; bottom: calc(9vh + 2px * var(--s)); width: calc(10px * var(--s)); height: calc(10px * var(--s)); background: url("assets/yarn.png?v=4") 0 0 / 100% 100% no-repeat; image-rendering: pixelated; pointer-events: none; will-change: transform; }
-  .wallclock { position: absolute; z-index: 1; image-rendering: pixelated; pointer-events: none; }
   header { position: absolute; top: 0; left: 0; right: 0; z-index: 3; }
   header .wrap { max-width: 960px; display: flex; justify-content: space-between; align-items: center; padding-top: 16px; padding-bottom: 16px; }
   header strong { font-size: 1rem; color: #1a1a1a; }
@@ -80,12 +79,11 @@
 <body>
 <div class="hero">
   <div class="hero-bg" aria-hidden="true"></div>
-  <canvas class="wallclock" id="wallclock" width="34" height="34" aria-hidden="true"></canvas>
   <div class="yarn" id="yarn" aria-hidden="true"></div>
   <div class="cat" id="cat" aria-hidden="true"><div class="cat-sprite"></div></div>
   <header>
     <div class="wrap">
-      <strong>1qLa</strong>
+      <strong>金島拓矢</strong>
       <nav>
         <a href="#about">About</a>
         <a href="#skills">Skills</a>
@@ -95,8 +93,7 @@
     </div>
   </header>
   <div class="hero-inner">
-    <h1>はじめまして、1qLaです。</h1>
-    <p class="role">Web・組み込み・クラウドの制作物をつくっています。</p>
+    <h1>金島拓矢 Portfolio</h1>
   </div>
   <a class="scroll-hint" href="#about">Scroll ↓</a>
 </div>
@@ -184,16 +181,15 @@
 </main>
 
 <footer>
-  <div class="wrap">&copy; 2026 1qLa</div>
+  <div class="wrap">&copy; 2026 金島拓矢</div>
 </footer>
 
 <script>
-// ヒーロー: 壁掛け時計(現在時刻)と、毛糸玉で遊び続ける猫
+// ヒーロー: 毛糸玉で遊び続ける猫
 (function () {
   var hero = document.querySelector('.hero');
   var cat = document.getElementById('cat');
   var yarn = document.getElementById('yarn');
-  var face = document.getElementById('wallclock');
   if (!hero || !cat || !yarn) return;
   var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -204,44 +200,6 @@
     else { sc = Math.max(W / 320, H / 180); ox = (W - 320 * sc) / 2; oy = (H - 180 * sc) / 2; }
     return { W: W, H: H, sc: sc, X: function (lx) { return ox + lx * sc; }, Y: function (ly) { return oy + ly * sc; } };
   };
-
-  // ---- 壁掛け時計の針(背景の文字盤の上に、同じドットの大きさで描く)
-  var CLOCK = { x: 165, y: 45, r: 14 };
-  var ctx = face && face.getContext('2d');
-  var line = function (x0, y0, x1, y1, col) {            // ドットの線
-    ctx.fillStyle = col;
-    var dx = Math.abs(x1 - x0), dy = -Math.abs(y1 - y0), sx = x0 < x1 ? 1 : -1, sy = y0 < y1 ? 1 : -1, err = dx + dy;
-    for (;;) {
-      ctx.fillRect(x0, y0, 1, 1);
-      if (x0 === x1 && y0 === y1) break;
-      var e2 = 2 * err;
-      if (e2 >= dy) { err += dy; x0 += sx; }
-      if (e2 <= dx) { err += dx; y0 += sy; }
-    }
-  };
-  var drawClock = function () {
-    if (!ctx) return;
-    var d = new Date(), c = 17;                           // canvas は 34x34 ドット、中心 (17,17)
-    var sec = d.getSeconds(), min = d.getMinutes() + sec / 60, hr = (d.getHours() % 12) + min / 60;
-    ctx.clearRect(0, 0, 34, 34);
-    var hand = function (frac, len, col) {
-      var a = frac * Math.PI * 2;
-      line(c, c, Math.round(c + Math.sin(a) * len), Math.round(c - Math.cos(a) * len), col);
-    };
-    hand(hr / 12, 6, '#2b1e1c');
-    hand(min / 60, 9, '#2b1e1c');
-    hand(sec / 60, 10, '#e05252');
-    ctx.fillStyle = '#2b1e1c'; ctx.fillRect(c - 1, c - 1, 2, 2);
-  };
-  var placeClock = function () {
-    if (!face) return;
-    var g = geom(), size = 34 * g.sc;
-    face.style.width = size + 'px'; face.style.height = size + 'px';
-    face.style.left = (g.X(CLOCK.x) - size / 2) + 'px';
-    face.style.top = (g.Y(CLOCK.y) - size / 2) + 'px';
-  };
-  placeClock(); drawClock(); setInterval(drawClock, 1000);
-  addEventListener('resize', placeClock);
 
   // ---- 猫(x は猫の左端。フレーム: 0-3 歩き / 4-7 座り / 10-11 構える)
   var SIT_TAIL = [0, 1, 0, 3];

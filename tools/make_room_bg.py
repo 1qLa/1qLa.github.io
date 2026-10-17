@@ -1,7 +1,7 @@
 """ヒーローの背景(部屋のドット絵 assets/hero-bg.png)を作る。
 
 標準ライブラリだけで動く。使い方: python3 tools/make_room_bg.py [出力先]
-昼の部屋を1枚出力する。壁掛け時計の針は、ページ側(canvas)で描く。
+昼の部屋を1枚出力する。壁掛け時計は 12:00 で固定。
 320x180 の絵を、CSS 側で拡大して表示する(image-rendering: pixelated)。
 左にキャットタワー、中央は挨拶文のために空け、右に窓・爪研ぎ・ペットベッドを置く。
 床には段ボールの爪研ぎ。毛糸玉はページ側で動かす。
@@ -60,7 +60,7 @@ def post(x0, y0, x1, y1):
         rect(x0 + 1, y, x1 - 1, y, 'sisal2')
 
 
-CLOCK = (165, 45, 14)   # 壁掛け時計の中心 x, y と半径(針はページ側で描く)
+CLOCK = (165, 45, 14)   # 壁掛け時計の中心 x, y と半径
 
 
 def glass():
@@ -74,7 +74,7 @@ def glass():
 
 
 def clock_face():
-    """丸い壁掛け時計の文字盤(12個の目盛り)。針は動くので、ページ側の canvas で描く。"""
+    """丸い壁掛け時計(12個の目盛りと、12:00 を指す針)。"""
     cx, cy, r = CLOCK
     ellipse(cx, cy, r + 1.5, r + 1.5, 'ol')
     ellipse(cx, cy, r, r, 'frame2')
@@ -85,6 +85,10 @@ def clock_face():
         r0 = r - (5 if long_tick else 4)
         for rr in range(int(r0), int(r - 2)):
             put(int(round(cx + math.sin(ang) * rr)), int(round(cy - math.cos(ang) * rr)), 'ol')
+    # 針は 12:00 に固定(短針は太く短く、長針は細く長く)
+    rect(cx - 1, cy - 6, cx, cy, 'ol')
+    rect(cx, cy - 9, cx, cy - 6, 'ol')
+    rect(cx - 1, cy - 1, cx, cy, 'ol')
 
 
 def build():
