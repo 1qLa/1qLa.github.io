@@ -17,7 +17,10 @@ export default function Hero() {
         </div>
       </header>
       <div className="hero-inner">
-        <h1>金島拓矢 Portfolio</h1>
+        <h1>
+          <span className="name">金島拓矢</span>
+          <span className="sub">Portfolio</span>
+        </h1>
       </div>
       <a className="scroll-hint" href="#about">Scroll ↓</a>
     </div>
