@@ -1,10 +1,27 @@
-// 自己紹介の2段落目は、当面デモの文章(制作物の内容から書いた仮のもの)
+import SectionTitle from './SectionTitle'
+
+// 左の文章は、当面デモ(制作物の内容から書いた仮のもの)。右の表は、確認できている事実だけ。
+const facts = [
+  ['志望', 'クラウドセキュリティ'],
+  ['学校', 'ECCコンピュータ専門学校'],
+  ['卒業', '2028年(予定)'],
+  ['受賞', '学内展示 コンセプト賞'],
+]
+
 export default function About() {
   return (
     <section id="about">
-      <h2>About</h2>
-      <p>ECCコンピュータ専門学校に在学中で、2028年に卒業予定です。</p>
-      <p>ソフトウェアと現実の世界をつなぐものづくりが好きです。ブラウザで動く3D学習ゲーム、NFCで開くスマートライト、電子ペーパーのカレンダー、TerraformによるAWSの監視をつくっています。</p>
+      <SectionTitle>About</SectionTitle>
+      <div className="about-grid">
+        <div>
+          <p>ソフトウェアと現実の世界をつなぐものづくりが好きです。ブラウザで動く3D学習ゲーム、NFCで開くスマートライト、電子ペーパーのカレンダー、TerraformによるAWSの監視をつくっています。</p>
+        </div>
+        <dl className="panel facts">
+          {facts.map(([k, v]) => (
+            <div key={k}><dt>{k}</dt><dd>{v}</dd></div>
+          ))}
+        </dl>
+      </div>
     </section>
   )
 }

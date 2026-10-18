@@ -5,13 +5,16 @@ import { genericPlay } from './icons'
 
 // role は [項目名, 内容] の組のリスト(開発期間・担当・状況・形態など)。内容は、各 GitHub リポジトリの README か、
 // 本人から聞いたことだけを書く(推測で書かない)。分からない項目は書かない。
-// リンクの icon があれば、ラベルの前にロゴを表示する。
+// tag は題名の横の小さな札(kind: 'wip' は開発中の色)。featured は、先頭に大きく出す作品。note は、強調して見せたい一言。
+// リンクの icon があれば、ラベルの前にロゴを表示する。primary は、目立つ(緑の)ボタンにする。
 // 発表スライドのリンクは載せない(各 GitHub リポジトリの README にある)。
 // 本文(body)は、文字列なら段落、{ flow } なら構成図。文中の `…` はコード表記になる。
 // media.kind: 'scene' は桃太郎の3D表示、'image' は画像。media がなければ文章だけのカード。
 export const works = [
   {
     id: 'aws-drift',
+    featured: true,
+    tag: { label: '志望分野に近い作品' },
     title: 'AWS Drift Detection and Slack Alerts',
     stack: 'Terraform / AWS (CloudTrail, EventBridge, SNS, SQS, Lambda, KMS) / Python',
     role: [
@@ -32,8 +35,11 @@ export const works = [
           ],
         },
       },
-      'Lambdaの環境変数に置いたSlack Webhook URLは、AWS KMSで暗号化しています。',
     ],
+    note: {
+      label: 'セキュリティ上の工夫',
+      text: 'Lambdaの環境変数に置くSlack Webhook URLは、AWS KMSで暗号化しています。',
+    },
     links: [
       { label: 'GitHub', href: 'https://github.com/1qLa/aws_Terraform', icon: siGithub },
     ],
@@ -52,12 +58,13 @@ export const works = [
       '学内展示でコンセプト賞を受賞し、CEATEC 2026 でも展示しました。',
     ],
     links: [
-      { label: 'Play', href: 'https://pingers.tenma.tech/', icon: genericPlay },
+      { label: 'Play', href: 'https://pingers.tenma.tech/', icon: genericPlay, primary: true },
       { label: 'GitHub', href: 'https://github.com/1qLa/networkgame', icon: siGithub },
     ],
   },
   {
     id: 'lightouch',
+    tag: { label: '開発中', kind: 'wip' },
     title: 'LighTouch',
     stack: 'Kotlin (Android) / ESP32-C3 / PN532 / BLE',
     role: [

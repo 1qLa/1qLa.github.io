@@ -1,12 +1,15 @@
+import Header from './components/Header'
 import Hero from './components/Hero'
 import About from './components/About'
 import Skills from './components/Skills'
 import Works from './components/Works'
 import Contact from './components/Contact'
+import Footer from './components/Footer'
 
 export default function App() {
   return (
     <>
+      <Header />
       <Hero />
       <main className="wrap">
         <About />
@@ -14,9 +17,7 @@ export default function App() {
         <Works />
         <Contact />
       </main>
-      <footer>
-        <div className="wrap">&copy; 2026 金島拓矢</div>
-      </footer>
+      <Footer />
     </>
   )
 }
