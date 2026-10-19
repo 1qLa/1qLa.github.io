@@ -2,6 +2,7 @@ import { useLayoutEffect, useRef } from 'react'
 import { backgroundGeometry } from '../lib/geometry'
 import { siGithub } from 'simple-icons'
 import Cat from './Cat'
+import clockImg from '../assets/clock.png'
 import Icon from './Icon'
 
 // 部屋のドット絵の上に、古いテレビを置き、名前を画面の中に映す。
@@ -20,8 +21,9 @@ export default function Hero() {
       const mobile = matchMedia('(max-width: 600px)').matches
       if (mobile) { inner.style.paddingTop = ''; return }
       const g = backgroundGeometry(hero.clientWidth, hero.clientHeight, false)
+      const CLOCK_H = 72 // アンテナの上に出る時計の分(CSS の .tv-clock と同じ)
       const LEG = 17 // 台の脚が台の下にはみ出す分(CSS の .tv-stand::before/after と同じ)
-      inner.style.paddingTop = Math.max(14, g.toY(134) - LEG - tv.offsetHeight) + 'px'
+      inner.style.paddingTop = Math.max(14 + CLOCK_H, g.toY(134) - LEG - tv.offsetHeight) + 'px'
     }
     place()
     addEventListener('resize', place)
@@ -34,7 +36,7 @@ export default function Hero() {
       <Cat heroRef={heroRef} />
       <div className="hero-inner" ref={innerRef}>
         <div className="tv" ref={tvRef}>
-          <div className="tv-clock" aria-hidden="true" />
+          <img className="tv-clock" src={clockImg} alt="" aria-hidden="true" />
           <div className="tv-antenna" aria-hidden="true"><i /><i /><b /></div>
           <div className="tv-body">
             <div className="tv-screen">

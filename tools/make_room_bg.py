@@ -1,7 +1,7 @@
 """ヒーローの背景(部屋のドット絵 src/assets/hero-bg.png)を作る。
 
 標準ライブラリだけで動く。使い方: python3 tools/make_room_bg.py [出力先]
-昼の部屋を1枚出力する。壁掛け時計は、テレビの左上にページ側(CSS)で置く(12:00 で固定)ので、ここでは描かない。
+昼の部屋を1枚出力する。壁掛け時計は、テレビのアンテナの上にページ側で置くので、背景ではなく別の画像 src/assets/clock.png に出す(12:00 で固定)。
 320x180 の絵を、CSS 側で拡大して表示する(image-rendering: pixelated)。
 左にキャットタワー、中央は挨拶文のために空け、右に窓・爪研ぎ・ペットベッドを置く。
 中央の床は、ページ側でテレビ台を置くために空けておく。毛糸玉はページ側で動かす。
@@ -60,7 +60,7 @@ def post(x0, y0, x1, y1):
         rect(x0 + 1, y, x1 - 1, y, 'sisal2')
 
 
-CLOCK = (118, 38, 14)   # 壁掛け時計の中心 x, y と半径(clock_face() を呼べば、背景の絵に描ける。今は使っていない)
+CLOCK = (118, 38, 14)   # 壁掛け時計の中心 x, y と半径(clock_face() で描き、write_clock() が透過 PNG にする)
 
 
 def glass():
@@ -140,18 +140,19 @@ def build():
     ellipse(54, 59, 3, 3, 'toy'); put(54, 63, 'toy'); put(53, 64, 'toy'); put(55, 64, 'toy')
 
     # ---- 爪研ぎポール(中央右)
-    box(216, 122, 246, 130, 'cream')
-    post(226, 92, 236, 122)
-    box(220, 86, 242, 92, 'cream')
+    # テレビと重ならないよう、右に寄せて少し手前(下)に置く
+    box(228, 136, 258, 144, 'cream')
+    post(238, 106, 248, 136)
+    box(232, 100, 254, 106, 'cream')
 
     # ---- ペットベッド(右)
-    ellipse(280, 134, 30, 11, 'ol')
-    ellipse(280, 133, 29, 10, 'bed')
-    ellipse(280, 130, 22, 6, 'bedin')
-    ellipse(280, 131, 21, 4, 'bed2')
-    ellipse(280, 129, 19, 3, 'bedin')
+    ellipse(280, 148, 30, 11, 'ol')
+    ellipse(280, 147, 29, 10, 'bed')
+    ellipse(280, 144, 22, 6, 'bedin')
+    ellipse(280, 145, 21, 4, 'bed2')
+    ellipse(280, 143, 19, 3, 'bedin')
     for x in range(258, 304, 5):
-        put(x, 136, 'bed2')
+        put(x, 150, 'bed2')
 
     glass()
     return px
@@ -168,6 +169,27 @@ def write_png(path, rows):
     open(path, 'wb').write(png)
 
 
+def write_clock(path):
+    """時計だけを、背景が透ける 32x32 の PNG に出す。"""
+    global px
+    key = (255, 0, 255)
+    px = [[key] * W for _ in range(H)]
+    clock_face()
+    cx, cy, r = CLOCK
+    x0, y0 = cx - 16, cy - 16
+    raw = b''
+    for y in range(y0, y0 + 32):
+        raw += b'\x00' + b''.join(bytes((*px[y][x], 0 if px[y][x] == key else 255)) for x in range(x0, x0 + 32))
+
+    def chunk(t, d):
+        c = struct.pack('>I', len(d)) + t + d
+        return c + struct.pack('>I', zlib.crc32(t + d) & 0xffffffff)
+    png = b'\x89PNG\r\n\x1a\n' + chunk(b'IHDR', struct.pack('>IIBBBBB', 32, 32, 8, 6, 0, 0, 0))
+    png += chunk(b'IDAT', zlib.compress(raw, 9)) + chunk(b'IEND', b'')
+    open(path, 'wb').write(png)
+
+
 if __name__ == '__main__':
     base = sys.argv[1] if len(sys.argv) > 1 else 'src/assets/hero-bg.png'
     write_png(base, build())
+    write_clock(base.rsplit('/', 1)[0] + '/clock.png' if '/' in base else 'clock.png')

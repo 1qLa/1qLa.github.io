@@ -57,10 +57,7 @@ p { margin: 0 0 1em; }
 .tv-antenna i:nth-child(1) { transform: translateX(-50%) rotate(-30deg); }
 .tv-antenna i:nth-child(2) { transform: translateX(-50%) rotate(30deg); }
 .tv-antenna b { position: absolute; left: 50%; bottom: 0; width: 56px; height: 20px; transform: translateX(-50%); background: #6b4a3a; border: 3px solid var(--ink); border-bottom: 0; border-radius: 28px 28px 0 0; }
-.tv-clock { position: absolute; z-index: 1; left: 13%; top: -4px; width: 48px; height: 48px; background: #fffdf6; border: 3px solid var(--ink); border-radius: 50%; }
-.tv-clock::before, .tv-clock::after { content: ""; position: absolute; left: 50%; bottom: 50%; background: var(--ink); transform: translateX(-50%); }
-.tv-clock::before { width: 3px; height: 17px; }
-.tv-clock::after { width: 5px; height: 11px; }
+.tv-clock { position: absolute; z-index: 1; left: 50%; top: 0; width: 64px; height: 64px; transform: translate(-50%, calc(-100% - 8px)); image-rendering: pixelated; }
 .tv-body { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr 72px; gap: 14px; padding: 14px; background: #e9dfca; border: 3px solid var(--ink); border-radius: 18px; box-shadow: 8px 8px 0 var(--ink); }
 .tv-screen { position: relative; overflow: hidden; padding: 20px 26px 24px; color: #f7f1e1; text-align: left; background: #1d2b2a; border: 3px solid var(--ink); border-radius: 28px / 24px; box-shadow: inset 0 0 28px rgba(0, 0, 0, .65); }
 .tv-screen::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(to bottom, rgba(255, 255, 255, .04) 0 2px, rgba(0, 0, 0, .12) 2px 4px); }
@@ -172,9 +169,7 @@ section { padding: 52px 0 4px; }
   .tv-screen .aim { font-size: .95rem; }
   .tv-screen .school { font-size: .8rem; }
   .tv-ch { right: 14px; }
-  .tv-clock { width: 38px; height: 38px; top: 2px; }
-  .tv-clock::before { height: 13px; }
-  .tv-clock::after { height: 9px; }
+  .tv-clock { width: 48px; height: 48px; }
   .knob { width: 32px; height: 32px; }
   .knob::after { height: 10px; transform-origin: 50% 11px; }
   .vents { width: 34px; height: 20px; }
