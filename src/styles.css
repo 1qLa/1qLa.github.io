@@ -48,13 +48,39 @@ p { margin: 0 0 1em; }
 .hero { position: relative; min-height: calc(100vh - var(--header-h)); min-height: calc(100svh - var(--header-h)); display: grid; place-items: center; overflow: hidden; background: #f6e8d0; }
 .hero-bg { position: absolute; inset: 0; z-index: 0; background: #f6e8d0 url("./assets/hero-bg.png") center / cover no-repeat; image-rendering: pixelated; }
 .hero::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(to bottom, rgba(255, 255, 255, .1) 0, rgba(255, 255, 255, .1) 86%, var(--paper) 100%); }
-.hero-inner { position: relative; z-index: 2; padding: 0 16px; width: 100%; display: flex; justify-content: center; }
-.hero-card { width: min(440px, 100%); padding: 22px 28px 26px; background: var(--card); border: 3px solid var(--ink); box-shadow: var(--shadow); text-align: left; }
-.eyebrow { margin: 0 0 2px; color: var(--green); font-size: .85rem; letter-spacing: .12em; }
-.hero-card h1 { margin: 0 0 6px; font-size: clamp(2.2rem, 5vw, 3rem); font-weight: 400; line-height: 1.25; letter-spacing: .06em; }
-.aim { margin: 0 0 6px; font-size: 1.05rem; font-weight: 700; line-height: 1.6; }
-.school { margin: 0; color: var(--muted); font-size: .9rem; line-height: 1.7; }
-.hero-card .btns { margin-top: 18px; }
+.hero-inner { position: relative; z-index: 2; align-self: start; width: 100%; padding: clamp(14px, 4vh, 44px) 16px 0; display: flex; justify-content: center; }
+
+/* 古いテレビ: 画面に名前を映し、台の上にボタンを置く */
+.tv { position: relative; width: min(540px, 100%); }
+.tv-antenna { position: relative; height: 54px; margin-bottom: -3px; }
+.tv-antenna i { position: absolute; left: 50%; bottom: 8px; width: 4px; height: 52px; background: var(--ink); transform-origin: 50% 100%; }
+.tv-antenna i:nth-child(1) { transform: translateX(-50%) rotate(-30deg); }
+.tv-antenna i:nth-child(2) { transform: translateX(-50%) rotate(30deg); }
+.tv-antenna b { position: absolute; left: 50%; bottom: 0; width: 56px; height: 20px; transform: translateX(-50%); background: #6b4a3a; border: 3px solid var(--ink); border-bottom: 0; border-radius: 28px 28px 0 0; }
+.tv-clock { position: absolute; z-index: 1; left: 13%; top: -4px; width: 48px; height: 48px; background: #fffdf6; border: 3px solid var(--ink); border-radius: 50%; }
+.tv-clock::before, .tv-clock::after { content: ""; position: absolute; left: 50%; bottom: 50%; background: var(--ink); transform: translateX(-50%); }
+.tv-clock::before { width: 3px; height: 17px; }
+.tv-clock::after { width: 5px; height: 11px; }
+.tv-body { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr 72px; gap: 14px; padding: 14px; background: #e9dfca; border: 3px solid var(--ink); border-radius: 18px; box-shadow: 8px 8px 0 var(--ink); }
+.tv-screen { position: relative; overflow: hidden; padding: 20px 26px 24px; color: #f7f1e1; text-align: left; background: #1d2b2a; border: 3px solid var(--ink); border-radius: 28px / 24px; box-shadow: inset 0 0 28px rgba(0, 0, 0, .65); }
+.tv-screen::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(to bottom, rgba(255, 255, 255, .04) 0 2px, rgba(0, 0, 0, .12) 2px 4px); }
+.tv-ch { position: absolute; top: 12px; right: 22px; color: #7fd6b6; font-size: .78rem; letter-spacing: .08em; }
+.tv-screen .eyebrow { margin: 0 0 2px; color: #8fe0c0; font-size: .85rem; letter-spacing: .12em; }
+.tv-screen h1 { margin: 0 0 8px; color: #f7f1e1; font-size: clamp(2.2rem, 5vw, 3.1rem); font-weight: 400; line-height: 1.25; letter-spacing: .06em; }
+.tv-screen .aim { margin: 0 0 6px; color: #f7f1e1; font-size: 1.05rem; font-weight: 700; line-height: 1.6; }
+.tv-screen .school { margin: 0; color: #b9b4a2; font-size: .9rem; line-height: 1.7; }
+.tv-side { display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 10px 0 4px; }
+.knob { position: relative; flex: none; width: 44px; height: 44px; background: #b9855d; border: 3px solid var(--ink); border-radius: 50%; }
+.knob::after { content: ""; position: absolute; left: 50%; top: 4px; width: 3px; height: 14px; background: var(--ink); transform-origin: 50% 15px; transform: translateX(-50%) rotate(var(--r, 0deg)); }
+.knob.k2 { --r: 40deg; }
+.vents { width: 46px; height: 26px; background: repeating-linear-gradient(to bottom, var(--ink) 0 3px, transparent 3px 7px); }
+.power { display: flex; align-items: center; gap: 5px; font-size: .62rem; line-height: 1; letter-spacing: .04em; }
+.power i { width: 12px; height: 12px; background: #4bd39a; border: 2px solid var(--ink); }
+.tv-stand { position: relative; margin: 10px -16px 0; padding: 12px 16px 14px; background: #b9855d; border: 3px solid var(--ink); box-shadow: 8px 8px 0 var(--ink); }
+.tv-stand::before, .tv-stand::after { content: ""; position: absolute; bottom: -17px; width: 44px; height: 14px; background: var(--ink); }
+.tv-stand::before { left: 40px; }
+.tv-stand::after { right: 40px; }
+.tv-stand .btns { margin: 0; justify-content: center; }
 
 /* ドット絵の猫(スプライトシート: 48x32 のコマが12個) */
 .cat { --s: 4; position: absolute; z-index: 2; left: 0; bottom: 9vh; width: calc(48px * var(--s)); height: calc(32px * var(--s)); pointer-events: none; will-change: transform; }
@@ -141,7 +167,19 @@ section { padding: 52px 0 4px; }
   .hero-bg { background-size: auto 45%; background-position: 12% 100%; }
   .cat, .yarn { --s: 2; }
   .sprite-cat { --s: 2; }
-  .hero-card { padding: 18px 20px 22px; }
+  .tv-body { grid-template-columns: 1fr 48px; gap: 10px; padding: 10px; }
+  .tv-screen { padding: 16px 16px 18px; border-radius: 22px / 18px; }
+  .tv-screen .aim { font-size: .95rem; }
+  .tv-screen .school { font-size: .8rem; }
+  .tv-ch { right: 14px; }
+  .tv-clock { width: 38px; height: 38px; top: 2px; }
+  .tv-clock::before { height: 13px; }
+  .tv-clock::after { height: 9px; }
+  .knob { width: 32px; height: 32px; }
+  .knob::after { height: 10px; transform-origin: 50% 11px; }
+  .vents { width: 34px; height: 20px; }
+  .power { flex-direction: column; font-size: .5rem; gap: 3px; }
+  .tv-stand { margin: 10px -8px 0; padding: 10px 10px 12px; }
   .site-header nav { gap: 14px; font-size: .88rem; }
   .panel { padding: 16px 16px; }
   .work-body { padding: 16px 16px 20px; }
