@@ -76,3 +76,19 @@
 
 - 2026-11-17: 自分のドメイン（1qla.com、www.1qla.com）で公開するための Terraform を、ブランチ custom-domain の infra/ に書いた（S3 非公開バケット + CloudFront（OAC）+ us-east-1 の ACM 証明書 + Route 53 の A/AAAA）。state は別プロジェクトと同じバケットの portfolio/terraform.tfstate。init -backend=false と validate は通った。plan と apply は、AWS にログインしてから行う。アカウント ID などは infra/backend.hcl と infra/terraform.tfvars（Git に入れない。.example を用意）。
 - 公開は、apply のあと scripts/upload.sh（ビルド、S3 へ同期、キャッシュ削除）を手で実行して行う。GitHub Pages（1qLa.github.io）は、1qla.com が動くことを確認するまで、そのままにする。main には、まだ取り込まない（取り込むと deploy.yml が走る）。
+- 2026-11-17(決定): 1qla.com は、別作品(MCP認可検証)の基盤と同居する。向こうは `*.probe.1qla.com`(診断用、ALB 東京)と `authz.1qla.com`(管理画面、CloudFront)を使い、証明書も別々に持つ。ゾーンは両方とも `data` で参照するだけで、作らない(本人が向こうの dns.tf を確認)。そのため、こちらの apply と向こうの base の apply は、順番を問わず別々に進められる。出典: 本人が向こうのディレクトリから貼った内容(2026-11-17)。ドメインは ACTIVE、期限 2027-11-12、自動更新とプライバシー保護オン(2026-11-12 に本人が CLI で確認)。
+- 2026-11-17(決定): サブドメインにするのは、Web で動く作品(authz、networkgame の Play)だけ。ほかの作品は GitHub リンクのまま。`*.1qla.com` のワイルドカード証明書と、ワイルドカードの DNS レコードは作らない(作品ごとに個別の名前と証明書にする)。probe は診断IDごとの一時的な名前なので、サイトからはリンクしない。
+- 2026-11-17: custom-domain の plan を確認した(プロファイル mcp-personal)。追加17、変更0、削除0。ゾーンの既存レコードは NS・SOA と、向こうの検証用 CNAME(authz、probe)だけで、同名の衝突なし。apply はまだ(本人の許可待ち)。
+## 次にやること(1qla.com)
+1. infra/ で terraform apply(証明書の DNS 検証と CloudFront の作成に、数分〜十数分かかる)。
+2. scripts/upload.sh でビルドと S3 への同期。https://1qla.com と https://www.1qla.com の表示を確認する。
+3. 確認できたら、Works に authz.1qla.com へのリンクを足す(authz が動いてから)。GitHub Pages は、1qla.com が動くまでそのまま。
+- 2026-11-17(確認): CloudFront の従量課金には、毎月の無料枠(Always Free)がある。インターネットへの転送 1 TB、HTTP/HTTPS リクエスト 1,000 万、CloudFront Functions 200 万回。無効化は、月 1,000 パスまで追加料金なし。出典: https://aws.amazon.com/cloudfront/pricing/pay-as-you-go/(確認日 2026-11-17)。Notion の試算(月1万表示で約1.2ドル)は、無料枠を含めていないので、実際は CloudFront 分がほぼ 0 になる見込み(月10万表示でも、転送約100 GB・リクエスト約50万で、枠内)。
+- 同じく確認: CloudFront には、別に「フラット料金プラン」(Free は月0ドル、転送 100 GB・リクエスト 100 万、超過料金なし、ロギングなどは含まれない)がある。出典: https://aws.amazon.com/cloudfront/pricing/(確認日 2026-11-17)。今の Terraform は従量課金のディストリビューションで、フラット料金プランは使っていない。
+- 未確認: 無料枠がアカウント全体で合算されるか(authz の CloudFront と共有か)、リージョンごとの扱い。AWS のログイン後、Billing の Free Tier の画面で見られる。
+- 2026-11-17: custom-domain の apply を実行した(追加17、変更0、削除0)。scripts/upload.sh でビルドと S3 への同期、キャッシュ削除も済み。確認: https://1qla.com/ と https://www.1qla.com/ が 200(証明書の検証に成功、タイトルは「金島拓矢 | Portfolio」)、JS・CSS・3D モデル(.glb)が 200、http は https へ 301。GitHub Pages(1qLa.github.io)は、そのまま残している。ブラウザでの見た目(PC幅・スマホ幅)は、まだ見ていない。
+- 未対応: ブランチ custom-domain は、未コミット(progress.md)・未 push・main 未取り込み。今後の更新は、本人が scripts/upload.sh を手で実行して公開する(main に取り込むと deploy.yml が GitHub Pages へ公開する。両方に出る形になる)。
+- 2026-11-17(決定): AWS への公開を、GitHub Actions + OIDC で自動化する(CodePipeline は使わない。既存の CI を活かすため)。infra/ci.tf に、GitHub 用 OIDC プロバイダ(このアカウントには無かった)と、IAM ロール portfolio-github-deploy を追加し、apply した(追加3、変更0、削除0)。ロールを引き受けられるのは、リポジトリ 1qLa/1qLa.github.io の main ブランチだけ。権限は、このバケットへの ListBucket・PutObject・DeleteObject と、このディストリビューションの CreateInvalidation だけ。
+- GitHub に登録した値: secret AWS_DEPLOY_ROLE_ARN、variable S3_BUCKET、variable CLOUDFRONT_DISTRIBUTION_ID(リポジトリ 1qLa/1qLa.github.io)。
+- .github/workflows/deploy.yml に、ジョブ deploy-aws を追加した(build のあと、Pages への公開と並行して、S3 同期と CloudFront の無効化を行う)。新しく使う Actions は SHA で固定(upload-artifact v7.0.2、download-artifact v8.0.2、configure-aws-credentials v6.3.0。確認日 2026-11-17)。YAML の構文と lint は通った。
+- まだ試していない: deploy-aws の実行。信頼条件が main だけなので、ブランチからは試せない。main に取り込んだとき、初めて動く(同時に GitHub Pages にも公開される)。失敗したときは、Pages は影響を受けない(ジョブは別)。直し方は、deploy.yml の修正か、infra/ci.tf の信頼条件の確認。
