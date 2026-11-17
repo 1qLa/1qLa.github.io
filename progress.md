@@ -73,3 +73,6 @@
 8. 連絡先メールを就活用に揃える。
 9. リポジトリ名 aws_Terraform の変更(変更すると旧URLからは転送されるが、このサイトと README のリンクも直す)と、各 README の整理。
 - 公開リポジトリ networkgame に、データベースの接続情報(backend/.env)が含まれている。パスワードの変更と、リポジトリからの削除を検討する。
+
+- 2026-11-17: 自分のドメイン（1qla.com、www.1qla.com）で公開するための Terraform を、ブランチ custom-domain の infra/ に書いた（S3 非公開バケット + CloudFront（OAC）+ us-east-1 の ACM 証明書 + Route 53 の A/AAAA）。state は別プロジェクトと同じバケットの portfolio/terraform.tfstate。init -backend=false と validate は通った。plan と apply は、AWS にログインしてから行う。アカウント ID などは infra/backend.hcl と infra/terraform.tfvars（Git に入れない。.example を用意）。
+- 公開は、apply のあと scripts/upload.sh（ビルド、S3 へ同期、キャッシュ削除）を手で実行して行う。GitHub Pages（1qLa.github.io）は、1qla.com が動くことを確認するまで、そのままにする。main には、まだ取り込まない（取り込むと deploy.yml が走る）。

@@ -1,3 +1,9 @@
 node_modules/
 dist/
 .DS_Store
+
+# Terraform（state、アカウント固有の値は入れない）
+infra/.terraform/
+infra/*.tfstate*
+infra/*.tfvars
+infra/backend.hcl

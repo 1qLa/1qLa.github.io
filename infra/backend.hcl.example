@@ -1,0 +1,5 @@
+bucket              = "<state 用バケット名>"
+key                 = "portfolio/terraform.tfstate"
+region              = "ap-northeast-1"
+profile             = "<AWS CLI のプロファイル>"
+allowed_account_ids = ["<AWS アカウント ID>"]
