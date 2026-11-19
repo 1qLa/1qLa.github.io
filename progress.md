@@ -108,3 +108,5 @@
 - 2026-11-19(解決): ci.tf の信頼条件を ID 形式に直して apply した(変更1)。診断用ワークフローで、実際のトークンの sub が repo:1qLa@170410213/1qLa.github.io@1416528793:ref:refs/heads/<ブランチ> の形であることを確認(診断用ブランチ oidc-debug は、確認後に削除)。apply の直後の再実行は同じエラーで失敗し、少し待ってからの再実行(run 44447954269)で、deploy-aws が成功した(IAM のポリシー変更の反映待ちと見られる。原因の断定はしていない)。https://1qla.com で、新しい About、MCP Authorization Checker、題名「昔々のパケットたち」を確認し、「受賞」の行が無いことも確認した。
 - 学び: 信頼ポリシーを変えた直後は、数十秒〜数分、反映を待ってから再実行する。このリポジトリの OIDC sub は、名前ではなく ID 形式(変えるときは gh api repos/1qLa/1qLa.github.io/actions/oidc/customization/sub で確認)。
 - 次の確認: main への push だけで、deploy-aws が自動で成功すること(再実行ではない、2回目の実行)。
+- 2026-11-19: Works の文言を削った(本人の指示)。MCP Authorization Checker の「状況」は「開発中」だけにし、本文の3段落目(診断用の環境を、診断のときだけ Terraform で起動して削除する)を外した。LighTouch の本文から「設定の変更は、本体の物理ボタンを押している間だけできます。」を外した。lint、テスト、ビルドは通った。未コミット。
+- 2026-11-19: ブランチ custom-domain を削除した(ローカルとリモート。main に全部入っていることを確認してから)。残っているブランチで、main に無いコミットが0のもの: pixel-design、tv-hero、tv-stand、clock-move、react-migration(削除するかは本人が決める)。
