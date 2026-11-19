@@ -45,8 +45,25 @@ export const works = [
     ],
   },
   {
+    id: 'mcp-authorization-checker',
+    tag: { label: '開発中', kind: 'wip' },
+    title: 'MCP Authorization Checker',
+    stack: 'Python / MCP Python SDK / Starlette / Terraform / AWS (ALB, ACM, Route 53, ECR, S3, DynamoDB, KMS)',
+    role: [
+      ['形態', '就職作品'],
+      ['開発期間', '2026年9月〜2027年1月(予定)'],
+      ['状況', '開発中(設計、常設の基盤、診断用サーバーの認可の入口までができたところ。認可サーバー、判定、管理画面はこれから)'],
+    ],
+    body: [
+      'AIクライアントは、MCPで認証つきのサーバーにつなぐとき、OAuth 2.1 の手順を自動で進めます。ただし、手順のどこまで対応しているかはAIごとに違い、「つながらない」「つながるが安全でない」といった差が出ます。',
+      'この作品は、診断用のMCPサーバーと認可サーバーにAIから接続してもらい、すべての通信を記録します。記録は、MCP仕様(2025-06-18版)に基づくルールで、AIを使わずに、確認項目ごとに合否を付けます。',
+      '診断用の環境は、診断のときだけTerraformで起動し、終わったら削除して、料金を抑えます。',
+    ],
+    // リポジトリが非公開のため、リンクは載せない(公開したら GitHub のリンクを足す)。
+  },
+  {
     id: 'packets-of-long-ago',
-    title: 'Packets of Long Ago (昔々のパケットたち)',
+    title: '昔々のパケットたち',
     stack: 'Vue.js 3 / Three.js / Blender',
     role: [
       ['開発期間', '約4〜5ヶ月'],

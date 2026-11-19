@@ -54,14 +54,16 @@ export default function WorkCard({ work }) {
         {work.note && (
           <p className="note"><b>{work.note.label}:</b>{work.note.text}</p>
         )}
-        <div className="btns">
-          {work.links.map((l) => (
-            <a key={l.href} className={l.primary ? 'btn btn-primary' : 'btn'} href={l.href}>
-              {l.icon && <Icon icon={l.icon} color={l.primary ? 'currentColor' : undefined} />}
-              {l.label}
-            </a>
-          ))}
-        </div>
+        {work.links?.length > 0 && (
+          <div className="btns">
+            {work.links.map((l) => (
+              <a key={l.href} className={l.primary ? 'btn btn-primary' : 'btn'} href={l.href}>
+                {l.icon && <Icon icon={l.icon} color={l.primary ? 'currentColor' : undefined} />}
+                {l.label}
+              </a>
+            ))}
+          </div>
+        )}
       </div>
     </article>
   )

@@ -92,3 +92,13 @@
 - GitHub に登録した値: secret AWS_DEPLOY_ROLE_ARN、variable S3_BUCKET、variable CLOUDFRONT_DISTRIBUTION_ID(リポジトリ 1qLa/1qLa.github.io)。
 - .github/workflows/deploy.yml に、ジョブ deploy-aws を追加した(build のあと、Pages への公開と並行して、S3 同期と CloudFront の無効化を行う)。新しく使う Actions は SHA で固定(upload-artifact v7.0.2、download-artifact v8.0.2、configure-aws-credentials v6.3.0。確認日 2026-11-17)。YAML の構文と lint は通った。
 - まだ試していない: deploy-aws の実行。信頼条件が main だけなので、ブランチからは試せない。main に取り込んだとき、初めて動く(同時に GitHub Pages にも公開される)。失敗したときは、Pages は影響を受けない(ジョブは別)。直し方は、deploy.yml の修正か、infra/ci.tf の信頼条件の確認。
+- 2026-11-19: About の本文を、本人の言葉に書き換えた(src/components/About.jsx)。「授業でクラウド(AWS)を1年学び、インターンで認証・認可を学んでから、セキュリティ方面に関心があり、クラウドセキュリティエンジニアを目指しています。ゼミではTerraformで、AWSの構成ドリフトについての研究をしています。/ ICTトラブルシューティングコンテストやMBSD Cybersecurity Challengesなどのコンテストにも参加した経験があります。」右の表は変えていない。lint、テスト(24件)、ビルドは通った。ブラウザでの見た目は未確認。未コミット(ブランチ custom-domain)。「次にやること」の3番(自己紹介)は、卒業月と志望職種を表に足すかどうかだけが残り。
+- 公開しない方針(メモにあるが、サイトには出さない): 内定先と、オファー面談の予定、辞退した会社、インターン先の社名、経歴(高校中退)、最寄り駅、趣味。載せる場合は、本人の許可を得てから。
+- 2026-11-19: About の右の表から「受賞」を削除した(本人の指示)。表は、志望・学校・卒業の3項目。
+- 2026-11-19: About の本文に「AIのセキュリティにも興味があります。」を追加した(本人の指示)。2文ごとの段落にするため、段落を並べ替えた(1段落目: 志望・授業・インターン・AIのセキュリティ、2段落目: ゼミ・コンテスト)。
+- 2026-11-19: About の本文を、本人が選んだ文面に差し替えた(「専門学校の授業でAWSを1年間学び、インターンで認証・認可に触れたことをきっかけに、セキュリティ分野に関心を持つようになりました。現在はクラウドセキュリティエンジニアを目指しており、AIセキュリティにも興味があります。/ ゼミではTerraformを用いて、AWS環境の構成ドリフトに関する研究に取り組んでいます。また、ICTトラブルシューティングコンテストやMBSD Cybersecurity Challengesなどのコンテストにも参加してきました。」)。未コミット(ブランチ custom-domain)。
+- 2026-11-19: Works に就職作品「MCP Authorization Checker」を追加した(ドリフト検知の次、2列の先頭)。内容は、リポジトリ 1qLa/mcp-authorization-checker(非公開)の develop ブランチの docs/checklist.md、docs/probe-design.md、progress.md と、本人のメモ(開発期間 2026年9月〜2027年1月、学校の AWS アカウント)から。形態は「就職作品」、状況は「開発中(診断用サーバーの認可の入口まで。認可サーバー、判定、結果画面を作成中)」。担当は、聞いていないので書いていない。リポジトリが非公開のため、リンクなし。カード(WorkCard.jsx)とテスト(works.test.js)を、links が無くてもよい形に直した(テスト26件、通過)。公開したら GitHub のリンクを足す(公開前に docs/ のリソース ID などの確認が要る)。
+- 2026-11-19: 作品「Packets of Long Ago (昔々のパケットたち)」の題名を「昔々のパケットたち」に変えた(本人の指示)。
+- 決めていない(本人に確認): MCP Authorization Checker の担当(個人かチームか)、カードの位置(今は2列の先頭)。桃太郎のカードの「コンセプト賞を受賞」の記載は、About の表から外したあとも残っている(works.js の本文)。
+- 2026-11-19: MCP Authorization Checker のカードを、リポジトリの README(develop、2026-11-19 の版。出典 https://github.com/1qLa/mcp-authorization-checker 、確認日 2026-11-19)に合わせて書き直した。本文は3段落(背景: AIごとに OAuth 2.1 の対応が違う / 診断用サーバーに接続させて全通信を記録し、MCP 2025-06-18 のルールで AI を使わずに合否を付ける / 診断のときだけ Terraform で起動して削除)。使用技術に Starlette を追加(認可サーバーを自作する決定、2026-11-19)。状況は README の表に合わせた(設計、常設基盤、観測用 MCP サーバーの認可の入口まで。認可サーバー、判定、API、管理画面は未実装)。
+- 書いていないこと(README にあるが、サイトに出すかは本人の判断): 診断対象の AI の名前(Claude、Copilot、Meta Muse など)、予定の構成(Lambda、API Gateway、Cognito、React、CloudFront)、費用の数字。

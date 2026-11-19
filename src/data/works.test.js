@@ -8,15 +8,15 @@ describe('works', () => {
     expect(new Set(ids).size).toBe(ids.length)
   })
 
-  it.each(works)('$id: タイトル・使用技術・本文・リンクがある', (w) => {
+  it.each(works)('$id: タイトル・使用技術・本文がある', (w) => {
     expect(w.title).toBeTruthy()
     expect(w.stack).toBeTruthy()
     expect(w.body.length).toBeGreaterThan(0)
-    expect(w.links.length).toBeGreaterThan(0)
   })
 
+  // 非公開のリポジトリの作品は、リンクなしで載せる(links は省いてよい)。
   it.each(works)('$id: リンクはすべてhttpsで、ラベルがある', (w) => {
-    for (const l of w.links) {
+    for (const l of w.links ?? []) {
       expect(l.label).toBeTruthy()
       expect(l.href.startsWith('https://')).toBe(true)
     }
@@ -37,7 +37,7 @@ describe('works', () => {
 
   it('アイコンのあるリンクは、図形データを持つ', () => {
     for (const w of works) {
-      for (const l of w.links) {
+      for (const l of w.links ?? []) {
         if (l.icon) expect(l.icon.path).toMatch(/^M/)
       }
     }
@@ -45,7 +45,7 @@ describe('works', () => {
 
   it('発表スライドのリンクは載せない(READMEにある)', () => {
     for (const w of works) {
-      for (const l of w.links) expect(l.href).not.toContain('canva')
+      for (const l of w.links ?? []) expect(l.href).not.toContain('canva')
     }
   })
 
