@@ -110,3 +110,4 @@
 - 次の確認: main への push だけで、deploy-aws が自動で成功すること(再実行ではない、2回目の実行)。
 - 2026-11-19: Works の文言を削った(本人の指示)。MCP Authorization Checker の「状況」は「開発中」だけにし、本文の3段落目(診断用の環境を、診断のときだけ Terraform で起動して削除する)を外した。LighTouch の本文から「設定の変更は、本体の物理ボタンを押している間だけできます。」を外した。lint、テスト、ビルドは通った。未コミット。
 - 2026-11-19: ブランチ custom-domain を削除した(ローカルとリモート。main に全部入っていることを確認してから)。残っているブランチで、main に無いコミットが0のもの: pixel-design、tv-hero、tv-stand、clock-move、react-migration(削除するかは本人が決める)。
+- 2026-11-19(決定、本人の指示): GitHub Pages(1qLa.github.io)は、そのまま残す。桃太郎のカードの「コンセプト賞を受賞」の記載も、そのまま残す。ブランチ pixel-design、tv-hero、tv-stand、clock-move、react-migration を削除した(ローカルとリモート。どれも main に無いコミットは0だった)。残っているのは main と、Dependabot のブランチだけ。
