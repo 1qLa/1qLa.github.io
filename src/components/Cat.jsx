@@ -18,7 +18,7 @@ export default function Cat({ heroRef }) {
     if (!hero || !cat || !yarn) return undefined
 
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
-    const geom = () => backgroundGeometry(hero.clientWidth, hero.clientHeight, matchMedia('(max-width: 600px)').matches)
+    const geom = () => backgroundGeometry(hero.clientWidth, hero.clientHeight)
     const scale = () => parseFloat(getComputedStyle(cat).getPropertyValue('--s'))
     const catW = () => cat.offsetWidth
     const maxX = () => Math.max(0, hero.clientWidth - catW())

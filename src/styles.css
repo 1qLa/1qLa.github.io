@@ -45,6 +45,8 @@ p { margin: 0 0 1em; }
 .site-header nav a:not(.btn):hover { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 4px; }
 
 /* ---- トップ: 部屋のドット絵と、名前のカード ---- */
+/* hero-frame は、PC幅では何もしない箱。スマホ幅では、1280x800 の .hero を縮めて入れる枠(下の @media を見る)。 */
+.hero-frame { display: contents; }
 .hero { position: relative; min-height: calc(100vh - var(--header-h)); min-height: calc(100svh - var(--header-h)); display: grid; place-items: center; overflow: hidden; background: #f6e8d0; }
 .hero-bg { position: absolute; inset: 0; z-index: 0; background: #f6e8d0 url("./assets/hero-bg.png") center / cover no-repeat; image-rendering: pixelated; }
 .hero::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(to bottom, rgba(255, 255, 255, .1) 0, rgba(255, 255, 255, .1) 86%, var(--paper) 100%); }
@@ -161,20 +163,13 @@ section { padding: 52px 0 4px; }
   .flow { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 @media (max-width: 600px) {
-  .hero-bg { background-size: auto 45%; background-position: 12% 100%; }
-  .cat, .yarn { --s: 2; }
+  /* トップは、PC の画面(1280x800)をそのまま縮小して見せる。--k は、Hero.jsx が横幅から決める倍率 */
+  .hero-frame { display: block; position: relative; overflow: hidden; height: calc(800px * var(--k, .3)); }
+  .hero { position: absolute; left: 0; top: 0; width: 1280px; height: 800px; min-height: 0; transform: scale(var(--k, .3)); transform-origin: 0 0; }
+  .tv-screen h1 { font-size: 3.1rem; }
+  .cat { bottom: 72px; }
+  .yarn { bottom: calc(72px + 2px * var(--s)); }
   .sprite-cat { --s: 2; }
-  .tv-body { grid-template-columns: 1fr 48px; gap: 10px; padding: 10px; }
-  .tv-screen { padding: 16px 16px 18px; border-radius: 22px / 18px; }
-  .tv-screen .aim { font-size: .95rem; }
-  .tv-screen .school { font-size: .8rem; }
-  .tv-ch { right: 14px; }
-  .tv-clock { width: 48px; height: 48px; }
-  .knob { width: 32px; height: 32px; }
-  .knob::after { height: 10px; transform-origin: 50% 11px; }
-  .vents { width: 34px; height: 20px; }
-  .power { flex-direction: column; font-size: .5rem; gap: 3px; }
-  .tv-stand { margin: 10px -8px 0; padding: 10px 10px 12px; }
   .site-header nav { gap: 14px; font-size: .88rem; }
   .panel { padding: 16px 16px; }
   .work-body { padding: 16px 16px 20px; }

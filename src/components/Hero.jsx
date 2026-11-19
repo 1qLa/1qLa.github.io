@@ -8,29 +8,37 @@ import Icon from './Icon'
 // 部屋のドット絵の上に、古いテレビを置き、名前を画面の中に映す。
 // 「クラウドセキュリティエンジニア志望」は、デザイン案にあった文言(違えば直す)。
 // テレビの飾り(アンテナ・ダイヤル・通気口・電源ランプ)は、aria-hidden で読み上げから外している。
+const STAGE_W = 1280 // スマホ幅で縮小する前の、画面の幅(高さは800)
+
 export default function Hero() {
+  const frameRef = useRef(null)
   const heroRef = useRef(null)
   const tvRef = useRef(null)
   const innerRef = useRef(null)
 
-  // PC幅では、テレビ台の脚が背景の床(絵の y=134)に着くように、テレビの高さを合わせる。
-  // スマホ幅は、背景が下の一部だけなので、上に寄せたまま。
+  // スマホ幅(600px以下)は、PC の画面(1280x800)をそのまま組んで、横幅に合わせて縮小する。
+  // 縮小の倍率は --k に入れ、CSS が transform で縮める。縮めても要素の寸法は1280x800のままなので、猫の動きも同じ計算でよい。
+  // テレビ台の脚が背景の床(絵の y=134)に着くように、テレビの位置も合わせる。
   useLayoutEffect(() => {
-    const hero = heroRef.current, tv = tvRef.current, inner = innerRef.current
+    const frame = frameRef.current, hero = heroRef.current, tv = tvRef.current, inner = innerRef.current
+    const FLOOR_Y = 134 // 背景の絵の中の、床の y
+    const LEG = 17 // 台の脚が台の下にはみ出す分(CSS の .tv-stand::before/after と同じ)
+    const CLOCK_H = 72 // アンテナの上に出る時計の分(CSS の .tv-clock の高さ + 8px)
     const place = () => {
-      const mobile = matchMedia('(max-width: 600px)').matches
-      if (mobile) { inner.style.paddingTop = ''; return }
-      const g = backgroundGeometry(hero.clientWidth, hero.clientHeight, false)
-      const CLOCK_H = 72 // アンテナの上に出る時計の分(CSS の .tv-clock と同じ)
-      const LEG = 17 // 台の脚が台の下にはみ出す分(CSS の .tv-stand::before/after と同じ)
-      inner.style.paddingTop = Math.max(14 + CLOCK_H, g.toY(134) - LEG - tv.offsetHeight) + 'px'
+      frame.style.setProperty('--k', matchMedia('(max-width: 600px)').matches ? frame.clientWidth / STAGE_W : 1)
+      const g = backgroundGeometry(hero.clientWidth, hero.clientHeight)
+      inner.style.paddingTop = Math.max(14 + CLOCK_H, g.toY(FLOOR_Y) - LEG - tv.offsetHeight) + 'px'
     }
     place()
     addEventListener('resize', place)
-    return () => removeEventListener('resize', place)
+    // 文字の折り返しや、フォントの読み込みでテレビの高さが変わったときも、合わせ直す。
+    const observer = new ResizeObserver(place)
+    observer.observe(tv)
+    return () => { removeEventListener('resize', place); observer.disconnect() }
   }, [])
 
   return (
+    <div className="hero-frame" ref={frameRef}>
     <div className="hero" ref={heroRef}>
       <div className="hero-bg" aria-hidden="true" />
       <Cat heroRef={heroRef} />
@@ -64,6 +72,7 @@ export default function Hero() {
           </div>
         </div>
       </div>
+    </div>
     </div>
   )
 }
