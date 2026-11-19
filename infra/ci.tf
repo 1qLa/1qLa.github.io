@@ -1,8 +1,8 @@
 # GitHub Actions から AWS へ公開するための設定。鍵は使わず、OIDC で一時的な権限を渡す。
-variable "github_repo" {
-  description = "公開を許す GitHub リポジトリ（owner/name）"
+variable "github_sub_prefix" {
+  description = "OIDC トークンの sub の前半。このリポジトリは不変の ID 形式(use_immutable_subject)。gh api repos/<owner>/<repo>/actions/oidc/customization/sub の sub_claim_prefix で確認する(2026-11-19)"
   type        = string
-  default     = "1qLa/1qLa.github.io"
+  default     = "repo:1qLa@170410213/1qLa.github.io@1416528793"
 }
 
 variable "github_deploy_branch" {
@@ -37,7 +37,7 @@ data "aws_iam_policy_document" "deploy_trust" {
     condition {
       test     = "StringEquals"
       variable = "token.actions.githubusercontent.com:sub"
-      values   = ["repo:${var.github_repo}:ref:refs/heads/${var.github_deploy_branch}"]
+      values   = ["${var.github_sub_prefix}:ref:refs/heads/${var.github_deploy_branch}"]
     }
   }
 }
